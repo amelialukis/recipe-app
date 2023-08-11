@@ -18,9 +18,11 @@ from ..serializers import (
 
 RECIPES_URL = reverse("recipe:recipe-list")
 
+
 def detail_url(recipe_id):
     """Create and return a recipe detail URL."""
     return reverse("recipe:recipe-detail", args=[recipe_id])
+
 
 def create_recipe(user, **params):
     """Create and return a sample recipe."""
@@ -36,9 +38,11 @@ def create_recipe(user, **params):
     recipe = Recipe.objects.create(user=user, **defaults)
     return recipe
 
+
 def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
+
 
 class PublicRecipeAPITests(TestCase):
     """Test unauthenticated API requests."""
@@ -116,7 +120,7 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         recipe = Recipe.objects.get(id=res.data["id"])
         for k, v in payload.items():
-            self.assertEqual(getattr(recipe,k), v)
+            self.assertEqual(getattr(recipe, k), v)
         self.assertEqual(recipe.user, self.user)
 
     def test_partial_update(self):
@@ -140,7 +144,7 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_full_update(self):
         """Test full update of recipe."""
-        recipe =create_recipe(
+        recipe = create_recipe(
             user=self.user,
             title="Sample recipe title",
             link="http://example.com/recipe.pdf",
