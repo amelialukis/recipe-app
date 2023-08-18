@@ -3,7 +3,7 @@ LABEL authors="amelialukis"
 
 WORKDIR /app/web
 
-COPY package.json package-lock.json  ./
+COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
 
