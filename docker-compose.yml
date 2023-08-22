@@ -35,6 +35,7 @@ services:
       - db
 
   web:
+    stdin_open: true
     build:
       context: ./web/
       dockerfile: Dockerfile
