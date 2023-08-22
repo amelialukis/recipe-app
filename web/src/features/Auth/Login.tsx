@@ -19,7 +19,7 @@ import cookingMama from "../../assets/images/cooking_mama.png";
 
 const Login = () => {
     const navigate = useNavigate()
-    const {mutate, isSuccess, isError} = useLogin()
+    const {mutate, isSuccess, isError, isLoading} = useLogin()
     const [user, setUser] = useState({email: "", password: ""});
 
     useEffect(()=>{
@@ -74,6 +74,7 @@ const Login = () => {
                                     colorScheme="orange" 
                                     w="100%"
                                     onClick={onLoginButton}
+                                    isLoading={isLoading}
                                 >
                                     Login
                                 </Button>

@@ -8,6 +8,10 @@ export const useLogout = () => {
     localStorage.removeItem(TOKEN_KEY)
 }
 
+export const authenticatedUser = () => {
+    return !!localStorage.getItem(TOKEN_KEY)
+}
+
 export const client = axios.create({
     baseURL: BASE_URL
 })
