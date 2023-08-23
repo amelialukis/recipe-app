@@ -1,8 +1,18 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
 import AuthRoutes from "./features/Auth/router.tsx";
 import Layout from "./Layout.tsx";
 import { authenticatedUser } from "./api";
 import Home from "./features/Home/Home.tsx";
+import { JSX, ReactNode } from "react";
+import ProfileRoutes from "./features/Profile/router.tsx";
+
+const getAuthenticated = (element: JSX.Element | ReactNode) =>
+  authenticatedUser() ? element : <Navigate to="/login" />;
+
+const getAuthenticatedRoutes = (routes: RouteObject[]) =>
+  routes.map((route) => {
+    return { ...route, element: getAuthenticated(route.element) };
+  });
 
 export const router = createBrowserRouter([
   {
@@ -17,12 +27,8 @@ export const router = createBrowserRouter([
             element: <Home />,
           },
           {
-            path: "/profile",
-            element: authenticatedUser() ? (
-              <div>profile</div>
-            ) : (
-              <Navigate to="/login" />
-            ),
+            path: "profile",
+            children: getAuthenticatedRoutes(ProfileRoutes),
           },
         ],
       },
