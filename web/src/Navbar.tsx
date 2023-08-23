@@ -15,9 +15,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
-import "@fontsource/indie-flower/400.css";
 import { authenticatedUser, useLogout } from "./api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import cookingRecipe from "./assets/images/cooking_recipe.png";
 
 const Navbar = () => {
@@ -41,13 +40,21 @@ const Navbar = () => {
           </Link>
           {authenticatedUser() && (
             <HStack spacing="20px" ml="40px" hideBelow="md">
-              <Button
-                color="white"
-                variant="link"
-                onClick={() => navigate("/profile")}
-              >
-                Profile
-              </Button>
+              <NavLink to="/profile">
+                {({ isActive, isPending }) => (
+                  <Button
+                    color="white"
+                    variant="link"
+                    isActive={isActive}
+                    isLoading={isPending}
+                    _active={{
+                      color: "orange.500",
+                    }}
+                  >
+                    Profile
+                  </Button>
+                )}
+              </NavLink>
               <Button color="white" variant="link">
                 Recipes
               </Button>

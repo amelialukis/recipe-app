@@ -29,7 +29,6 @@ const Home = () => {
           <Text
             fontWeight="800"
             lineHeight="1"
-            letterSpacing="-5px"
             textTransform="uppercase"
             color="orange.400"
           >
@@ -38,7 +37,6 @@ const Home = () => {
           <Text
             fontWeight="800"
             lineHeight="1"
-            letterSpacing="-5px"
             textTransform="uppercase"
             color="orange.400"
           >
@@ -47,7 +45,6 @@ const Home = () => {
           <Text
             fontWeight="800"
             lineHeight="1"
-            letterSpacing="-5px"
             textTransform="uppercase"
             color="white"
           >
@@ -56,7 +53,6 @@ const Home = () => {
           <Text
             fontWeight="800"
             lineHeight="1"
-            letterSpacing="-5px"
             textTransform="uppercase"
             color="white"
           >

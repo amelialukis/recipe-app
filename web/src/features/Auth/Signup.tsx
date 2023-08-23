@@ -69,7 +69,7 @@ const Signup = () => {
               h="100%"
               justifyContent="center"
             >
-              <Text fontSize="3xl" fontWeight="300">
+              <Text fontSize="5xl" fontWeight="600">
                 Create Account
               </Text>
               <Text>Register to add and get a list of your own recipes.</Text>

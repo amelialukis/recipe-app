@@ -71,7 +71,7 @@ const Login = () => {
               h="100%"
               justifyContent="center"
             >
-              <Text fontSize="3xl" fontWeight="300">
+              <Text fontSize="5xl" fontWeight="600">
                 Welcome Back!
               </Text>
               <Text>Add and get a list of your own recipes.</Text>

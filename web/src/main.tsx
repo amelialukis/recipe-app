@@ -5,6 +5,8 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./router.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import theme from "../theme.ts";
+import "@fontsource/indie-flower/400.css";
+import "@fontsource/neucha/400.css";
 
 const queryClient = new QueryClient();
 
