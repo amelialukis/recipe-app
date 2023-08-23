@@ -69,7 +69,9 @@ const Signup = () => {
               h="100%"
               justifyContent="center"
             >
-              <Heading>Create Account</Heading>
+              <Text fontSize="3xl" fontWeight="300">
+                Create Account
+              </Text>
               <Text>Register to add and get a list of your own recipes.</Text>
               <Image src={tabletCookingRecipe} boxSize="150px" />
             </Stack>
@@ -77,9 +79,9 @@ const Signup = () => {
           <GridItem colSpan={2} px="30px">
             <Center>
               <Stack maxW="300px">
-                <Text fontSize="30px" textAlign="center">
+                <Heading fontSize="30px" textAlign="center">
                   Recipe App
-                </Text>
+                </Heading>
                 {error && <Text>{error.message}</Text>}
                 <FormControl>
                   <FormLabel>Name</FormLabel>
