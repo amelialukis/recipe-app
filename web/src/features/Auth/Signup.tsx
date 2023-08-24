@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Box,
   Button,
   Card,
   Center,
@@ -79,9 +80,11 @@ const Signup = () => {
           <GridItem colSpan={2} px="30px">
             <Center>
               <Stack maxW="300px">
-                <Heading fontSize="30px" textAlign="center">
-                  Recipe App
-                </Heading>
+                <Box onClick={() => navigate("/")} cursor="pointer">
+                  <Heading fontSize="30px" textAlign="center">
+                    Recipe App
+                  </Heading>
+                </Box>
                 {error && <Text>{error.message}</Text>}
                 <FormControl>
                   <FormLabel>Name</FormLabel>

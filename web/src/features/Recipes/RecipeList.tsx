@@ -17,8 +17,13 @@ import { recipes } from "../../recipes.ts";
 const example = recipes;
 const RecipeList = () => {
   return (
-    <Box my="20px" mx={{ base: "2px", md: "50px" }}>
-      <Grid templateColumns={{ lg: "repeat(5, 1fr)" }} gap={4}>
+    <Box
+      my="20px"
+      mx={{ base: "2px", md: "50px" }}
+      justifyContent="center"
+      display="flex"
+    >
+      <Grid templateColumns={{ lg: "repeat(5, 1fr)" }} gap={4} maxW="1500px">
         <GridItem colSpan={4}>
           <Text fontSize="3xl" fontWeight="300" pb="20px" pl="10px">
             Recipes

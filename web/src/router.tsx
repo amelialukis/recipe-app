@@ -6,6 +6,8 @@ import Home from "./features/Home/Home.tsx";
 import { JSX, ReactNode } from "react";
 import ProfileRoutes from "./features/Profile/router.tsx";
 import RecipeRoutes from "./features/Recipes/router.tsx";
+import TagList from "./features/Filter/TagList.tsx";
+import IngredientList from "./features/Filter/IngredientList.tsx";
 
 const getAuthenticated = (element: JSX.Element | ReactNode) =>
   authenticatedUser() ? element : <Navigate to="/login" />;
@@ -34,6 +36,14 @@ export const router = createBrowserRouter([
           {
             path: "recipe",
             children: getAuthenticatedRoutes(RecipeRoutes),
+          },
+          {
+            path: "tag",
+            element: getAuthenticated(<TagList />),
+          },
+          {
+            path: "ingredient",
+            element: getAuthenticated(<IngredientList />),
           },
         ],
       },

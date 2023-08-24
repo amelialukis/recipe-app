@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   AlertIcon,
+  Box,
   Button,
   Card,
   Center,
@@ -81,9 +82,11 @@ const Login = () => {
           <GridItem colSpan={2} px="30px">
             <Center>
               <Stack maxW="300px">
-                <Heading fontSize="30px" textAlign="center">
-                  Recipe App
-                </Heading>
+                <Box onClick={() => navigate("/")} cursor="pointer">
+                  <Heading fontSize="30px" textAlign="center">
+                    Recipe App
+                  </Heading>
+                </Box>
                 {isError && (
                   <Alert status="error">
                     <AlertIcon />

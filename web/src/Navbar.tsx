@@ -120,11 +120,25 @@ const Navbar = () => {
             // finalFocusRef={btnRef}
           >
             <DrawerOverlay />
-            <DrawerContent bgColor="orange.300">
-              <DrawerCloseButton color="white" size="lg" />
+            <DrawerContent bgColor="orange.300" py="30px">
+              <DrawerCloseButton color="white" size="lg" py="30px" />
               {authenticatedUser() ? (
                 <DrawerBody>
                   <Stack mt="50px" spacing="30px">
+                    <Button
+                      color="white"
+                      variant="link"
+                      size="lg"
+                      _active={{
+                        color: "orange.500",
+                      }}
+                      onClick={() => {
+                        onClose();
+                        navigate("/");
+                      }}
+                    >
+                      Home
+                    </Button>
                     <Button
                       color="white"
                       variant="link"
@@ -202,6 +216,7 @@ const Navbar = () => {
               ) : (
                 <DrawerBody>
                   <Button
+                    mt="50px"
                     onClick={() => {
                       onClose();
                       navigate("/login");
@@ -212,6 +227,7 @@ const Navbar = () => {
                     _active={{
                       color: "orange.500",
                     }}
+                    w="100%"
                   >
                     Log in
                   </Button>
@@ -238,19 +254,22 @@ const Navbar = () => {
             </Button>
           </HStack>
         ) : (
-          <Button
-            onClick={() => {
-              navigate("/login");
-            }}
-            color="white"
-            variant="link"
-            size="lg"
-            _active={{
-              color: "orange.500",
-            }}
-          >
-            Log in
-          </Button>
+          <HStack hideBelow="md">
+            <Button
+              onClick={() => {
+                useLogout();
+                navigate("/login");
+              }}
+              color="white"
+              variant="link"
+              size="lg"
+              _active={{
+                color: "orange.500",
+              }}
+            >
+              Log in
+            </Button>
+          </HStack>
         )}
       </HStack>
     </Stack>
