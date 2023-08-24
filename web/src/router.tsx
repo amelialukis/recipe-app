@@ -5,6 +5,7 @@ import { authenticatedUser } from "./api";
 import Home from "./features/Home/Home.tsx";
 import { JSX, ReactNode } from "react";
 import ProfileRoutes from "./features/Profile/router.tsx";
+import RecipeRoutes from "./features/Recipes/router.tsx";
 
 const getAuthenticated = (element: JSX.Element | ReactNode) =>
   authenticatedUser() ? element : <Navigate to="/login" />;
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
           {
             path: "profile",
             children: getAuthenticatedRoutes(ProfileRoutes),
+          },
+          {
+            path: "recipe",
+            children: getAuthenticatedRoutes(RecipeRoutes),
           },
         ],
       },

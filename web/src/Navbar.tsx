@@ -55,15 +55,51 @@ const Navbar = () => {
                   </Button>
                 )}
               </NavLink>
-              <Button color="white" variant="link">
-                Recipes
-              </Button>
-              <Button color="white" variant="link">
-                Ingredients
-              </Button>
-              <Button color="white" variant="link">
-                Tags
-              </Button>
+              <NavLink to="/recipe">
+                {({ isActive, isPending }) => (
+                  <Button
+                    color="white"
+                    variant="link"
+                    isActive={isActive}
+                    isLoading={isPending}
+                    _active={{
+                      color: "orange.500",
+                    }}
+                  >
+                    Recipes
+                  </Button>
+                )}
+              </NavLink>
+              <NavLink to="/tag">
+                {({ isActive, isPending }) => (
+                  <Button
+                    color="white"
+                    variant="link"
+                    isActive={isActive}
+                    isLoading={isPending}
+                    _active={{
+                      color: "orange.500",
+                    }}
+                  >
+                    Tags
+                  </Button>
+                )}
+              </NavLink>
+              <NavLink to="/ingredient">
+                {({ isActive, isPending }) => (
+                  <Button
+                    color="white"
+                    variant="link"
+                    isActive={isActive}
+                    isLoading={isPending}
+                    _active={{
+                      color: "orange.500",
+                    }}
+                  >
+                    Ingredients
+                  </Button>
+                )}
+              </NavLink>
             </HStack>
           )}
         </HStack>
@@ -93,6 +129,9 @@ const Navbar = () => {
                       color="white"
                       variant="link"
                       size="lg"
+                      _active={{
+                        color: "orange.500",
+                      }}
                       onClick={() => {
                         onClose();
                         navigate("/profile");
@@ -100,23 +139,80 @@ const Navbar = () => {
                     >
                       Profile
                     </Button>
-                    <Button color="white" variant="link" size="lg">
+                    <Button
+                      color="white"
+                      variant="link"
+                      size="lg"
+                      _active={{
+                        color: "orange.500",
+                      }}
+                      onClick={() => {
+                        onClose();
+                        navigate("/recipe");
+                      }}
+                    >
                       Recipes
                     </Button>
-                    <Button color="white" variant="link" size="lg">
-                      Ingredients
-                    </Button>
-                    <Button color="white" variant="link" size="lg">
+                    <Button
+                      color="white"
+                      variant="link"
+                      size="lg"
+                      _active={{
+                        color: "orange.500",
+                      }}
+                      onClick={() => {
+                        onClose();
+                        navigate("/tag");
+                      }}
+                    >
                       Tags
                     </Button>
-                    <Button color="white" variant="link" size="lg">
+                    <Button
+                      color="white"
+                      variant="link"
+                      size="lg"
+                      _active={{
+                        color: "orange.500",
+                      }}
+                      onClick={() => {
+                        onClose();
+                        navigate("/ingredient");
+                      }}
+                    >
+                      Ingredients
+                    </Button>
+
+                    <Button
+                      onClick={() => {
+                        onClose();
+                        useLogout();
+                        navigate("/");
+                      }}
+                      color="white"
+                      variant="link"
+                      size="lg"
+                      _active={{
+                        color: "orange.500",
+                      }}
+                    >
                       Log out
                     </Button>
                   </Stack>
                 </DrawerBody>
               ) : (
                 <DrawerBody>
-                  <Button color="white" variant="link" size="lg">
+                  <Button
+                    onClick={() => {
+                      onClose();
+                      navigate("/login");
+                    }}
+                    color="white"
+                    variant="link"
+                    size="lg"
+                    _active={{
+                      color: "orange.500",
+                    }}
+                  >
                     Log in
                   </Button>
                 </DrawerBody>
@@ -126,12 +222,35 @@ const Navbar = () => {
         </Box>
         {authenticatedUser() ? (
           <HStack hideBelow="md">
-            <Button color="white" variant="link" onClick={useLogout}>
+            <Button
+              onClick={() => {
+                useLogout();
+                navigate("/");
+              }}
+              color="white"
+              variant="link"
+              size="lg"
+              _active={{
+                color: "orange.500",
+              }}
+            >
               Log out
             </Button>
           </HStack>
         ) : (
-          <Link to="/login" />
+          <Button
+            onClick={() => {
+              navigate("/login");
+            }}
+            color="white"
+            variant="link"
+            size="lg"
+            _active={{
+              color: "orange.500",
+            }}
+          >
+            Log in
+          </Button>
         )}
       </HStack>
     </Stack>
