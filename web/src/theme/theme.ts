@@ -1,4 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
+import { inputTheme } from "./inputTheme.ts";
 
 const theme = extendTheme({
   fonts: {
@@ -17,6 +18,9 @@ const theme = extendTheme({
         size: "xl",
       },
     },
+  },
+  components: {
+    Input: inputTheme,
   },
 });
 

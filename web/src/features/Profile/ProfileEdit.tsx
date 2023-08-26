@@ -36,6 +36,7 @@ const ProfileEdit = () => {
                 type="text"
                 // value={user.name}
                 // onChange={onUserChange}
+                variant="orangeOutline"
               />
             </FormControl>
             <FormControl>
@@ -45,6 +46,7 @@ const ProfileEdit = () => {
                 type="email"
                 // value={user.email}
                 // onChange={onUserChange}
+                variant="orangeOutline"
               />
             </FormControl>
             <FormControl>
@@ -54,6 +56,7 @@ const ProfileEdit = () => {
                 type="password"
                 // value={user.password}
                 // onChange={onUserChange}
+                variant="orangeOutline"
               />
             </FormControl>
           </Stack>

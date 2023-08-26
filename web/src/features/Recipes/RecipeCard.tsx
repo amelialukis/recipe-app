@@ -1,6 +1,7 @@
 import { Box, Card, Image, Stack, Tag, Text } from "@chakra-ui/react";
 import tableware from "../../assets/images/thumbnail_syokki_plastic_fork.jpg";
 import { USD } from "../../currencyFormat.ts";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   recipe: {
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const RecipeCard = ({ recipe }: Props) => {
+  const navigate = useNavigate();
   const tags = recipe.tags.length <= 5 ? recipe.tags : recipe.tags.slice(0, 3);
   return (
     <Box>
@@ -34,6 +36,8 @@ const RecipeCard = ({ recipe }: Props) => {
         _hover={{
           transform: "scale(1.02,1.02)",
         }}
+        cursor="pointer"
+        onClick={() => navigate(`/recipe/${recipe.id}`)}
       >
         <Stack>
           <Box borderColor="orange.100" borderWidth="1px">
