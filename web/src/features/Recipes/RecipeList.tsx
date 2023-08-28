@@ -7,15 +7,20 @@ import {
   Box,
   Grid,
   GridItem,
+  HStack,
+  IconButton,
   SimpleGrid,
   Text,
 } from "@chakra-ui/react";
 import RecipeCard from "./RecipeCard.tsx";
 import RecipeFilter from "./RecipeFilter.tsx";
 import { recipes } from "../../recipes.ts";
+import { AddIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const example = recipes;
 const RecipeList = () => {
+  const navigate = useNavigate();
   return (
     <Box
       my="20px"
@@ -23,11 +28,21 @@ const RecipeList = () => {
       justifyContent="center"
       display="flex"
     >
-      <Grid templateColumns={{ lg: "repeat(5, 1fr)" }} gap={4} maxW="1500px">
+      <Grid templateColumns={{ lg: "repeat(5, 1fr)" }} gap="50px" maxW="1500px">
         <GridItem colSpan={4}>
-          <Text fontSize="3xl" fontWeight="300" pb="20px" pl="10px">
-            Recipes
-          </Text>
+          <HStack justifyContent="space-between" alignItems="center" pb="20px">
+            <Text fontSize="3xl" fontWeight="300" pl="10px">
+              Recipes
+            </Text>
+            <IconButton
+              aria-label="new recipe"
+              icon={<AddIcon />}
+              variant="outline"
+              colorScheme="orange"
+              color="orange.200"
+              onClick={() => navigate("/recipe/add")}
+            />
+          </HStack>
           <Accordion
             hideFrom="lg"
             allowToggle

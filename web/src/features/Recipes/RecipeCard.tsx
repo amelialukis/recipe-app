@@ -1,24 +1,11 @@
 import { Box, Card, Image, Stack, Tag, Text } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import tableware from "../../assets/images/thumbnail_syokki_plastic_fork.jpg";
 import { USD } from "../../currencyFormat.ts";
-import { useNavigate } from "react-router-dom";
+import { RecipeType } from "./types";
 
 interface Props {
-  recipe: {
-    id: number;
-    title: string;
-    description: string;
-    timeMinutes: number;
-    price: number;
-    link: string;
-    tags: {
-      name: string;
-    }[];
-    ingredients: {
-      name: string;
-    }[];
-    image: string;
-  };
+  recipe: RecipeType;
 }
 
 const RecipeCard = ({ recipe }: Props) => {
