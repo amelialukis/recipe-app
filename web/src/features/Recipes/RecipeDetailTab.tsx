@@ -14,7 +14,9 @@ interface Props {
   desc: string;
   ingredients: {
     id: number;
-    name: string;
+    amount: number;
+    unit: { id: number; name: string };
+    ingredient: { id: number; name: string };
   }[];
 }
 
@@ -40,7 +42,9 @@ const RecipeDetailTab = ({ desc, ingredients }: Props) => {
           <TabPanel>
             <UnorderedList>
               {ingredients.map((ing) => (
-                <ListItem key={ing.id}>{ing.name}</ListItem>
+                <ListItem key={ing.id}>
+                  {ing.amount} {ing.unit.name} {ing.ingredient.name}
+                </ListItem>
               ))}
             </UnorderedList>
           </TabPanel>

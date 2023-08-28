@@ -5,6 +5,7 @@ import {
   Card,
   Center,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Grid,
   GridItem,
@@ -17,17 +18,25 @@ import {
 import { useNavigate } from "react-router-dom";
 import tabletCookingRecipe from "../../assets/images/tablet_cooking_recipe.png";
 import useSignup from "./hooks/useSignup.ts";
+import useLogin from "./hooks/useLogin.ts";
 
 const Signup = () => {
   const navigate = useNavigate();
   const { mutate, isSuccess, error, isLoading } = useSignup();
+  const { mutate: login, isSuccess: loginSuccess } = useLogin();
   const [user, setUser] = useState({ name: "", email: "", password: "" });
 
   useEffect(() => {
     if (isSuccess) {
-      navigate("/");
+      login({ email: user.email, password: user.password });
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (loginSuccess) {
+      navigate("/");
+    }
+  }, [loginSuccess]);
 
   const onLoginPage = () => {
     navigate("/login");
@@ -54,6 +63,7 @@ const Signup = () => {
         h={{ base: "90%", md: "70%" }}
         opacity="85%"
         justifyContent="center"
+        overflow="hidden"
       >
         <Grid
           templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(5, 1fr)" }}
@@ -85,33 +95,50 @@ const Signup = () => {
                     Recipe App
                   </Heading>
                 </Box>
-                {error && <Text>{error.message}</Text>}
-                <FormControl>
+                <FormControl isInvalid={!!error?.response?.data?.name}>
                   <FormLabel>Name</FormLabel>
                   <Input
                     id="name"
                     type="text"
                     value={user.name}
                     onChange={onUserChange}
+                    variant="orangeOutline"
                   />
+                  {error?.response?.data?.name && (
+                    <FormErrorMessage>
+                      {error.response.data.name}
+                    </FormErrorMessage>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!error?.response?.data?.email}>
                   <FormLabel>Email address</FormLabel>
                   <Input
                     id="email"
                     type="email"
                     value={user.email}
                     onChange={onUserChange}
+                    variant="orangeOutline"
                   />
+                  {error?.response?.data?.email && (
+                    <FormErrorMessage>
+                      {error.response.data.email}
+                    </FormErrorMessage>
+                  )}
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!error?.response?.data?.password}>
                   <FormLabel>Password</FormLabel>
                   <Input
                     id="password"
                     type="password"
                     value={user.password}
                     onChange={onUserChange}
+                    variant="orangeOutline"
                   />
+                  {error?.response?.data?.password && (
+                    <FormErrorMessage>
+                      {error.response.data.password}
+                    </FormErrorMessage>
+                  )}
                 </FormControl>
                 <Button
                   mt="10px"

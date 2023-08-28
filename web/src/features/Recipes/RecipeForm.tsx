@@ -92,6 +92,8 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
     newIng.amount &&
       newIng.unit &&
       newIng.ingredient &&
+      ingList.filter((ing) => ing.ingredient.label == newIng.ingredient?.label)
+        .length === 0 &&
       setIngList([
         ...ingList,
         newIng as {
@@ -204,8 +206,7 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
                   <ListItem key={ing.ingredient.value}>
                     <HStack>
                       <Text>
-                        {ing.amount}
-                        {ing.unit.label} {ing.ingredient.label}
+                        {ing.amount} {ing.unit.label} {ing.ingredient.label}
                       </Text>
                       <Tooltip label="Delete ingredient" fontSize="sm">
                         <CloseButton

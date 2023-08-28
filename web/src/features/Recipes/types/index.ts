@@ -10,6 +10,7 @@ export interface RecipeType {
     name: string;
   }[];
   ingredients: {
+    id: number;
     amount: number;
     unit: { id: number; name: string };
     ingredient: { id: number; name: string };

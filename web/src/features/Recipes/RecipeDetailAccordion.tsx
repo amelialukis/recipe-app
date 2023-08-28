@@ -5,15 +5,19 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  ListItem,
   Stack,
   Text,
+  UnorderedList,
 } from "@chakra-ui/react";
 
 interface Props {
   desc: string;
   ingredients: {
     id: number;
-    name: string;
+    amount: number;
+    unit: { id: number; name: string };
+    ingredient: { id: number; name: string };
   }[];
 }
 
@@ -46,7 +50,15 @@ const RecipeDetailAccordion = ({ desc, ingredients }: Props) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel px={0}>
-            <Box>{ingredients[0].name}</Box>
+            <Box>
+              <UnorderedList>
+                {ingredients.map((ing) => (
+                  <ListItem key={ing.id}>
+                    {ing.amount} {ing.unit.name} {ing.ingredient.name}
+                  </ListItem>
+                ))}
+              </UnorderedList>
+            </Box>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>

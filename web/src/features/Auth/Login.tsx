@@ -100,6 +100,7 @@ const Login = () => {
                     type="email"
                     value={user.email}
                     onChange={onUserChange}
+                    variant="orangeOutline"
                   />
                 </FormControl>
                 <FormControl>
@@ -109,6 +110,7 @@ const Login = () => {
                     type="password"
                     value={user.password}
                     onChange={onUserChange}
+                    variant="orangeOutline"
                   />
                 </FormControl>
                 <Button

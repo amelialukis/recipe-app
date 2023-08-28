@@ -12,16 +12,21 @@ import {
   Tag,
   Text,
   Link,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
-import tableware from "../../assets/images/thumbnail_syokki_plastic_fork.jpg";
-import { recipes } from "../../recipes.ts";
+import { EditIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 import { USD } from "../../currencyFormat.ts";
-import RecipeDetailTab from "./RecipeDetailTab.tsx";
 import RecipeDetailAccordion from "./RecipeDetailAccordion.tsx";
+import RecipeDetailTab from "./RecipeDetailTab.tsx";
+import { recipes } from "../../recipes.ts";
+import tableware from "../../assets/images/thumbnail_syokki_plastic_fork.jpg";
 
 const recipe = recipes[3];
 
 const RecipeDetail = () => {
+  const navigate = useNavigate();
   return (
     <Stack
       my="20px"
@@ -54,9 +59,21 @@ const RecipeDetail = () => {
         <GridItem colSpan={{ lg: 2 }}>
           <Card borderColor="orange.100" variant="outline" w="100%" h="100%">
             <CardHeader>
-              <Text fontSize="xl" fontWeight="600">
-                {recipe.title}
-              </Text>
+              <HStack justifyContent="space-between">
+                <Text fontSize="xl" fontWeight="600">
+                  {recipe.title}
+                </Text>
+                <Tooltip label="Edit recipe.">
+                  <IconButton
+                    aria-label="edit recipe"
+                    icon={<EditIcon />}
+                    variant="outline"
+                    colorScheme="orange"
+                    color="orange.200"
+                    onClick={() => navigate(`/recipe/${recipe.id}/edit`)}
+                  />
+                </Tooltip>
+              </HStack>
             </CardHeader>
 
             <CardBody>

@@ -12,9 +12,19 @@ import IngredientList from "./features/Filter/IngredientList.tsx";
 const getAuthenticated = (element: JSX.Element | ReactNode) =>
   authenticatedUser() ? element : <Navigate to="/login" />;
 
-const getAuthenticatedRoutes = (routes: RouteObject[]) =>
+const getAuthenticatedRoutes = (routes: RouteObject[]): RouteObject[] =>
   routes.map((route) => {
-    return { ...route, element: getAuthenticated(route.element) };
+    if (route.children) {
+      return {
+        ...route,
+        element: getAuthenticated(route.element),
+        children: getAuthenticatedRoutes(route.children),
+      };
+    }
+    return {
+      ...route,
+      element: getAuthenticated(route.element),
+    };
   });
 
 export const router = createBrowserRouter([
