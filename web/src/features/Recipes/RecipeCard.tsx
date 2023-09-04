@@ -27,8 +27,14 @@ const RecipeCard = ({ recipe }: Props) => {
         onClick={() => navigate(`/recipe/${recipe.id}`)}
       >
         <Stack>
-          <Box borderColor="orange.100" borderWidth="1px">
-            <Image src={recipe.image || tableware} w="100%" objectFit="cover" />
+          <Box
+            borderColor="orange.100"
+            h={{ md: "320px", xl: "210px" }}
+            justifyContent="center"
+            display="flex"
+            borderWidth="1px"
+          >
+            <Image src={recipe.image || tableware} objectFit="cover" />
           </Box>
           <Text fontWeight="600">{recipe.title}</Text>
           <Text fontSize="md">{USD.format(recipe.price)}</Text>

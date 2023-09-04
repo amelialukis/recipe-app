@@ -1,15 +1,15 @@
 export interface RecipeType {
   id: number;
   title: string;
-  description: string;
+  description?: string;
   timeMinutes: number;
   price: number;
-  link: string;
+  link?: string;
   tags: {
     id: number;
     name: string;
   }[];
-  ingredients: {
+  ingredients?: {
     id: number;
     amount: number;
     unit: { id: number; name: string };
