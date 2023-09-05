@@ -1,6 +1,8 @@
+import {Suspense} from "react";
 import { Box, Stack } from "@chakra-ui/react";
 import Navbar from "./Navbar.tsx";
 import { Outlet } from "react-router-dom";
+import LoadSpinner from "./features/LoadSpinner.tsx";
 
 const Layout = () => {
   return (
@@ -16,7 +18,9 @@ const Layout = () => {
         <Navbar />
       </Box>
       <Box mt="80px" h="100vh">
-        <Outlet />
+          <Suspense fallback={<LoadSpinner/>}>
+            <Outlet />
+          </Suspense>
       </Box>
     </Stack>
   );

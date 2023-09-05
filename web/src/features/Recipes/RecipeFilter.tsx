@@ -11,11 +11,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { tags, ingredients } from "../../recipes.ts";
+import useGetTags from "../Filter/hooks/useGetTags.ts";
+import useGetIngredients from "../Filter/hooks/useGetIngredients.ts";
 
-const RecipeFilter = () => {
-  const [activeTags, setActiveTags] = useState<number[]>([]);
-  const [activeIng, setActiveIng] = useState<number[]>([]);
+interface Props{
+  tagParam: number[] | undefined;
+  ingredientParam: number[] | undefined;
+  onFilter: (tags: number[] | [], ingredients: number[] | []) => void
+}
+
+const RecipeFilter = ({tagParam, ingredientParam, onFilter}: Props) => {
+  const {data: tags} = useGetTags()
+  const {data: ingredients} = useGetIngredients()
+  const [activeTags, setActiveTags] = useState<number[]>(tagParam || []);
+  const [activeIng, setActiveIng] = useState<number[]>(ingredientParam || []);
   return (
     <Stack>
       <Text>Filter</Text>
@@ -32,7 +41,7 @@ const RecipeFilter = () => {
           </AccordionButton>
           <AccordionPanel px={0}>
             <Box>
-              {tags.map((tag) => (
+              {tags && tags.data.map((tag) => (
                 <Tag
                   key={tag.name}
                   variant={activeTags.includes(tag.id) ? "solid" : "outline"}
@@ -62,7 +71,7 @@ const RecipeFilter = () => {
           </AccordionButton>
           <AccordionPanel px={0}>
             <Box>
-              {ingredients.map((ing) => (
+              {ingredients && ingredients.data.map((ing) => (
                 <Tag
                   key={ing.name}
                   variant={activeIng.includes(ing.id) ? "solid" : "outline"}
@@ -83,7 +92,7 @@ const RecipeFilter = () => {
         </AccordionItem>
       </Accordion>
 
-      <Button colorScheme="orange">Filter</Button>
+      <Button colorScheme="orange" onClick={() => onFilter(activeTags, activeIng)}>Filter</Button>
     </Stack>
   );
 };

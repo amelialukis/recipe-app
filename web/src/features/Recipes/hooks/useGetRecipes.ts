@@ -3,10 +3,11 @@ import { client } from "../../../api";
 import { RecipeType } from "../types";
 import { AxiosResponse } from "axios";
 
-const useGetRecipes = () => {
+const useGetRecipes = (params: URLSearchParams) => {
   return useQuery<AxiosResponse<RecipeType[]>>({
     queryKey: ["recipes"],
-    queryFn: () => client.get("/api/recipe/recipes/"),
+    queryFn: () =>
+      client.get("/api/recipe/recipes/", { params: params}),
   });
 };
 
