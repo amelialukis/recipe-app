@@ -15,14 +15,17 @@ import {
   CloseButton,
   Tooltip,
   Button,
-  CardFooter,
+  CardFooter, Alert, AlertIcon, AlertDescription,
 } from "@chakra-ui/react";
 import CreatableSelect from "react-select/creatable";
 import { Theme } from "react-select";
 import Select from "react-select";
 import { AddIcon } from "@chakra-ui/icons";
-import { ingredientOptions, tagOptions, unitOptions } from "../../recipes.ts";
 import { RecipeType } from "./types";
+import useGetTags from "../Filter/hooks/useGetTags.ts";
+import useGetIngredients from "../Filter/hooks/useGetIngredients.ts";
+import useGetUnits from "./hooks/useGetUnits.ts";
+import getOptions from "./utils/getOptions.ts";
 
 const orangeTheme = (theme: Theme) => ({
   ...theme,
@@ -46,6 +49,13 @@ interface Props {
 }
 
 const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
+  const {data: tags, isError: tagError} = useGetTags()
+  const {data: units, isError: unitsError} = useGetUnits()
+  const {data: ings, isError: ingsError} = useGetIngredients()
+  const tagOptions = getOptions(tags?.data)
+  const unitOptions = getOptions(units?.data)
+  const ingredientOptions = getOptions(ings?.data)
+  const isError = tagError && unitsError && ingsError
   const initialRecipe = recipe_
     ? recipe_
     : {
@@ -123,7 +133,13 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
   };
 
   return (
-    <>
+    <Stack>
+      {isError && (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertDescription>Something went wrong.</AlertDescription>
+          </Alert>
+      )}
       <CardBody>
         <Stack spacing="15px">
           <FormControl isRequired>
@@ -306,11 +322,11 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
         </Stack>
       </CardBody>
       <CardFooter justifyContent="end">
-        <Button variant="ghost" colorScheme="orange" onClick={onRecipeSave}>
+        <Button variant="ghost" colorScheme="orange" isDisabled={isError} onClick={onRecipeSave}>
           Save
         </Button>
       </CardFooter>
-    </>
+    </Stack>
   );
 };
 export default RecipeForm;
