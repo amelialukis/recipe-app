@@ -30,7 +30,7 @@ const TagList = () => {
           {tags?.data ? (
             <ButtonFilter list={tags.data} paramKey={"tags"}/>
           ) : (
-            <Text>No tags found.</Text>
+            <Text>No tags was found.</Text>
           )}
         </Box>
       )}

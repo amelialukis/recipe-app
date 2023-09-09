@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 
 interface Props {
-  desc: string;
-  ingredients: {
+  desc?: string;
+  ingredients?: {
     id: number;
     amount: number;
     unit: { id: number; name: string };
@@ -52,7 +52,7 @@ const RecipeDetailAccordion = ({ desc, ingredients }: Props) => {
           <AccordionPanel px={0}>
             <Box>
               <UnorderedList>
-                {ingredients.map((ing) => (
+                {ingredients && ingredients.map((ing) => (
                   <ListItem key={ing.id}>
                     {ing.amount} {ing.unit.name} {ing.ingredient.name}
                   </ListItem>

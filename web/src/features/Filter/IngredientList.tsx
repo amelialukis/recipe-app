@@ -30,7 +30,7 @@ const IngredientList = () => {
           {ingredients?.data ? (
             <ButtonFilter list={ingredients.data} paramKey={"ingredients"}/>
           ) : (
-            <Text>No ingredient found.</Text>
+            <Text>No ingredient was found.</Text>
           )}
         </Box>
       )}

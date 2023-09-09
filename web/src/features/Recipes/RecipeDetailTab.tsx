@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 
 interface Props {
-  desc: string;
-  ingredients: {
+  desc?: string;
+  ingredients?: {
     id: number;
     amount: number;
     unit: { id: number; name: string };
@@ -41,7 +41,7 @@ const RecipeDetailTab = ({ desc, ingredients }: Props) => {
           </TabPanel>
           <TabPanel>
             <UnorderedList>
-              {ingredients.map((ing) => (
+              {ingredients && ingredients.map((ing) => (
                 <ListItem key={ing.id}>
                   {ing.amount} {ing.unit.name} {ing.ingredient.name}
                 </ListItem>
