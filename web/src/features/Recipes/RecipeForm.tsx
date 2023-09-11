@@ -30,6 +30,7 @@ import useGetTags from "../Filter/hooks/useGetTags.ts";
 import useGetIngredients from "../Filter/hooks/useGetIngredients.ts";
 import useGetUnits from "./hooks/useGetUnits.ts";
 import getOptions from "./utils/getOptions.ts";
+import { AxiosError } from "axios";
 
 const orangeTheme = (theme: Theme) => ({
   ...theme,
@@ -50,6 +51,7 @@ const orangeTheme = (theme: Theme) => ({
 interface Props {
   recipe?: RecipeType;
   onSave: (recipe: RecipeType | any) => void;
+  error?: AxiosError<RecipeType> | null;
 }
 
 const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
