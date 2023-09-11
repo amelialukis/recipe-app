@@ -18,6 +18,10 @@ const orangeOutline = definePartsStyle({
     _disabled: {
       bg: "orange.50",
     },
+    _invalid: {
+      border: "2px solid",
+      borderColor: "red.500",
+    },
   },
 });
 

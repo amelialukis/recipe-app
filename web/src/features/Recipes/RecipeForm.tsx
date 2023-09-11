@@ -31,6 +31,7 @@ import useGetIngredients from "../Filter/hooks/useGetIngredients.ts";
 import useGetUnits from "./hooks/useGetUnits.ts";
 import getOptions from "./utils/getOptions.ts";
 import { AxiosError } from "axios";
+import {camelizeKeys} from "humps";
 
 const orangeTheme = (theme: Theme) => ({
   ...theme,
@@ -62,6 +63,7 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
   const unitOptions = getOptions(units?.data);
   const ingredientOptions = getOptions(ings?.data);
   const isError = tagError && unitsError && ingsError;
+  const errMessage = error?.response?.data && camelizeKeys(error.response.data) as RecipeType
   const initialRecipe = recipe_
     ? recipe_
     : {
@@ -131,7 +133,7 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
     const ingredientsList = ingList.map((ing) => ({
       amount: ing.amount,
       unit: { id: ing.unit.value, name: ing.unit.label },
-      name: { id: ing.ingredient.value, name: ing.ingredient.label },
+      ingredient: { id: ing.ingredient.value, name: ing.ingredient.label },
     }));
     const newRecipe = { ...recipe, ingredients: ingredientsList };
     onSave(newRecipe);
@@ -147,7 +149,7 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
       )}
       <CardBody>
         <Stack spacing="15px">
-          <FormControl isRequired isInvalid={!!error?.response?.data?.title}>
+          <FormControl isRequired isInvalid={!!errMessage?.title}>
             <FormLabel>Recipe Name</FormLabel>
             <Input
               id="title"
@@ -157,24 +159,22 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
               onChange={onRecipeChange}
               placeholder="Your recipe name..."
             />
-            {error?.response?.data?.title && (
-              <FormErrorMessage>{error.response.data.title}</FormErrorMessage>
+            {errMessage?.title && (
+              <FormErrorMessage>{errMessage.title}</FormErrorMessage>
             )}
           </FormControl>
-          <SimpleGrid columns={2} columnGap="15px" alignItems="end">
-            <FormControl isRequired isInvalid={!!error?.response?.data?.price}>
+          <SimpleGrid columns={2} columnGap="15px" alignItems="start">
+            <FormControl isRequired isInvalid={!!errMessage?.price}>
               <FormLabel>Price</FormLabel>
               <NumberInput
                   borderColor="orange.100"
                   allowMouseWheel={false}
-                  min={0}
-                  clampValueOnBlur={false}
+                  value={recipe.price}
               >
                 <NumberInputField
                   id="price"
                   step=".01"
                   placeholder="Price in USD"
-                  value={recipe.price}
                   onChange={onRecipeChange}
                   _hover={{
                     borderColor: "orange.200",
@@ -188,25 +188,23 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
                   }}
                 />
               </NumberInput>
-              {error?.response?.data?.price && (
-                <FormErrorMessage>{error.response?.data.price}</FormErrorMessage>
+              {errMessage?.price && (
+                <FormErrorMessage>{errMessage.price}</FormErrorMessage>
               )}
             </FormControl>
             <FormControl
               isRequired
-              isInvalid={!!error?.response?.data?.timeMinutes}
+              isInvalid={!!errMessage?.timeMinutes}
             >
               <FormLabel>Time (minutes)</FormLabel>
               <NumberInput
                  borderColor="orange.100"
                  allowMouseWheel={false}
-                 min={0}
-                 clampValueOnBlur={false}
+                 value={recipe.timeMinutes}
               >
                 <NumberInputField
                   id="timeMinutes"
                   placeholder="Preparation and cooking time in minutes"
-                  value={recipe.timeMinutes}
                   onChange={onRecipeChange}
                   _hover={{
                     borderColor: "orange.200",
@@ -220,14 +218,14 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
                   }}
                 />
               </NumberInput>
-              {error?.response?.data?.timeMinutes && (
+              {errMessage?.timeMinutes && (
                 <FormErrorMessage>
-                  {error.response.data.timeMinutes}
+                  {errMessage.timeMinutes}
                 </FormErrorMessage>
               )}
             </FormControl>
           </SimpleGrid>
-          <FormControl isInvalid={!!error?.response?.data?.description}>
+          <FormControl isInvalid={!!errMessage?.description}>
             <FormLabel>Description</FormLabel>
             <Textarea
               id="description"
@@ -249,16 +247,16 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
                 setRecipe({ ...recipe, description: event.target.value })
               }
             />
-            {error?.response?.data?.description && (
+            {errMessage?.description && (
               <FormErrorMessage>
-                {error.response.data.description}
+                {errMessage.description}
               </FormErrorMessage>
             )}
           </FormControl>
           <FormControl
             fontSize="md"
             isRequired
-            isInvalid={!!error?.response?.data?.ingredients}
+            isInvalid={!!errMessage?.ingredients}
           >
             <FormLabel>Ingredients</FormLabel>
             {ingList && (
@@ -336,17 +334,17 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
                 onClick={onAddIng}
               />
             </HStack>
-            {error?.response?.data?.ingredients && (
+            {errMessage?.ingredients && (
               <FormErrorMessage>
-                {error.response.data.ingredients[0].amount +
+                {errMessage.ingredients[0].amount +
                   " " +
-                  error.response.data.ingredients[0].unit.name +
+                    errMessage.ingredients[0].unit.name +
                   " " +
-                  error.response.data.ingredients[0].ingredient.name}
+                    errMessage.ingredients[0].ingredient.name}
               </FormErrorMessage>
             )}
           </FormControl>
-          <FormControl isInvalid={!!error?.response?.data?.link}>
+          <FormControl isInvalid={!!errMessage?.link}>
             <FormLabel>Link</FormLabel>
             <Input
               id="link"
@@ -356,11 +354,11 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
               value={recipe.link}
               onChange={onRecipeChange}
             />
-            {error?.response?.data?.link && (
-              <FormErrorMessage>{error.response.data.link}</FormErrorMessage>
+            {errMessage?.link && (
+              <FormErrorMessage>{errMessage.link}</FormErrorMessage>
             )}
           </FormControl>
-          <FormControl fontSize="md" isInvalid={!!error?.response?.data?.tags}>
+          <FormControl fontSize="md" isInvalid={!!errMessage?.tags}>
             <FormLabel>Tags</FormLabel>
             <CreatableSelect
               isMulti
@@ -375,9 +373,9 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
                 })
               }
             />
-            {error?.response?.data?.tags && (
+            {errMessage?.tags && (
               <FormErrorMessage>
-                {error.response.data.tags[0].name}
+                {errMessage.tags[0].name}
               </FormErrorMessage>
             )}
           </FormControl>
