@@ -5,7 +5,7 @@ export interface RecipeType {
   timeMinutes: number;
   price: number;
   link?: string;
-  tags: {
+  tags?: {
     id: number;
     name: string;
   }[];
@@ -15,5 +15,5 @@ export interface RecipeType {
     unit: { id: number; name: string };
     ingredient: { id: number; name: string };
   }[];
-  image: string;
+  image?: string;
 }

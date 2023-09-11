@@ -15,7 +15,11 @@ import {
   CloseButton,
   Tooltip,
   Button,
-  CardFooter, Alert, AlertIcon, AlertDescription,
+  CardFooter,
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  FormErrorMessage, NumberInputField, NumberInput,
 } from "@chakra-ui/react";
 import CreatableSelect from "react-select/creatable";
 import { Theme } from "react-select";
@@ -48,14 +52,14 @@ interface Props {
   onSave: (recipe: RecipeType | any) => void;
 }
 
-const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
-  const {data: tags, isError: tagError} = useGetTags()
-  const {data: units, isError: unitsError} = useGetUnits()
-  const {data: ings, isError: ingsError} = useGetIngredients()
-  const tagOptions = getOptions(tags?.data)
-  const unitOptions = getOptions(units?.data)
-  const ingredientOptions = getOptions(ings?.data)
-  const isError = tagError && unitsError && ingsError
+const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
+  const { data: tags, isError: tagError } = useGetTags();
+  const { data: units, isError: unitsError } = useGetUnits();
+  const { data: ings, isError: ingsError } = useGetIngredients();
+  const tagOptions = getOptions(tags?.data);
+  const unitOptions = getOptions(units?.data);
+  const ingredientOptions = getOptions(ings?.data);
+  const isError = tagError && unitsError && ingsError;
   const initialRecipe = recipe_
     ? recipe_
     : {
@@ -67,7 +71,6 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
         link: "",
         tags: [],
         ingredients: [],
-        image: "",
       };
   const [recipe, setRecipe] = useState(initialRecipe as RecipeType);
   const initialIngredient = recipe?.ingredients
@@ -135,14 +138,14 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
   return (
     <Stack>
       {isError && (
-          <Alert status="error">
-            <AlertIcon />
-            <AlertDescription>Something went wrong.</AlertDescription>
-          </Alert>
+        <Alert status="error">
+          <AlertIcon />
+          <AlertDescription>Something went wrong.</AlertDescription>
+        </Alert>
       )}
       <CardBody>
         <Stack spacing="15px">
-          <FormControl isRequired>
+          <FormControl isRequired isInvalid={!!error?.response?.data?.title}>
             <FormLabel>Recipe Name</FormLabel>
             <Input
               id="title"
@@ -152,46 +155,77 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
               onChange={onRecipeChange}
               placeholder="Your recipe name..."
             />
+            {error?.response?.data?.title && (
+              <FormErrorMessage>{error.response.data.title}</FormErrorMessage>
+            )}
           </FormControl>
           <SimpleGrid columns={2} columnGap="15px" alignItems="end">
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={!!error?.response?.data?.price}>
               <FormLabel>Price</FormLabel>
-              <Input
-                id="price"
-                type="number"
-                step=".01"
-                variant="orangeOutline"
-                placeholder="Price in USD"
-                value={recipe.price}
-                onChange={onRecipeChange}
-              />
+              <NumberInput
+                  borderColor="orange.100"
+                  allowMouseWheel={false}
+                  min={0}
+                  clampValueOnBlur={false}
+              >
+                <NumberInputField
+                  id="price"
+                  step=".01"
+                  placeholder="Price in USD"
+                  value={recipe.price}
+                  onChange={onRecipeChange}
+                  _hover={{
+                    borderColor: "orange.200",
+                  }}
+                  _focusVisible={{
+                    border: "2px solid",
+                    borderColor: "orange.300",
+                  }}
+                  _disabled={{
+                    bg: "orange.50",
+                  }}
+                />
+              </NumberInput>
+              {error?.response?.data?.price && (
+                <FormErrorMessage>{error.response?.data.price}</FormErrorMessage>
+              )}
             </FormControl>
-            <FormControl isRequired>
+            <FormControl
+              isRequired
+              isInvalid={!!error?.response?.data?.timeMinutes}
+            >
               <FormLabel>Time (minutes)</FormLabel>
-              <Input
-                id="timeMinutes"
-                type="number"
-                variant="orangeOutline"
-                placeholder="Preparation and cooking time in minutes"
-                value={recipe.timeMinutes}
-                onChange={onRecipeChange}
-              />
+              <NumberInput
+                 borderColor="orange.100"
+                 allowMouseWheel={false}
+                 min={0}
+                 clampValueOnBlur={false}
+              >
+                <NumberInputField
+                  id="timeMinutes"
+                  placeholder="Preparation and cooking time in minutes"
+                  value={recipe.timeMinutes}
+                  onChange={onRecipeChange}
+                  _hover={{
+                    borderColor: "orange.200",
+                  }}
+                  _focusVisible={{
+                    border: "2px solid",
+                    borderColor: "orange.300",
+                  }}
+                  _disabled={{
+                    bg: "orange.50",
+                  }}
+                />
+              </NumberInput>
+              {error?.response?.data?.timeMinutes && (
+                <FormErrorMessage>
+                  {error.response.data.timeMinutes}
+                </FormErrorMessage>
+              )}
             </FormControl>
           </SimpleGrid>
-          <FormControl>
-            <FormLabel>Recipe Image</FormLabel>
-            <Input
-              id="image"
-              type="file"
-              borderWidth={0}
-              p={0}
-              borderRadius={0}
-              w="200px"
-              value={recipe.image}
-              onChange={onRecipeChange}
-            />
-          </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!error?.response?.data?.description}>
             <FormLabel>Description</FormLabel>
             <Textarea
               id="description"
@@ -213,8 +247,17 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
                 setRecipe({ ...recipe, description: event.target.value })
               }
             />
+            {error?.response?.data?.description && (
+              <FormErrorMessage>
+                {error.response.data.description}
+              </FormErrorMessage>
+            )}
           </FormControl>
-          <FormControl fontSize="md" isRequired>
+          <FormControl
+            fontSize="md"
+            isRequired
+            isInvalid={!!error?.response?.data?.ingredients}
+          >
             <FormLabel>Ingredients</FormLabel>
             {ingList && (
               <UnorderedList mb="10px">
@@ -291,8 +334,17 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
                 onClick={onAddIng}
               />
             </HStack>
+            {error?.response?.data?.ingredients && (
+              <FormErrorMessage>
+                {error.response.data.ingredients[0].amount +
+                  " " +
+                  error.response.data.ingredients[0].unit.name +
+                  " " +
+                  error.response.data.ingredients[0].ingredient.name}
+              </FormErrorMessage>
+            )}
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!error?.response?.data?.link}>
             <FormLabel>Link</FormLabel>
             <Input
               id="link"
@@ -302,8 +354,11 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
               value={recipe.link}
               onChange={onRecipeChange}
             />
+            {error?.response?.data?.link && (
+              <FormErrorMessage>{error.response.data.link}</FormErrorMessage>
+            )}
           </FormControl>
-          <FormControl fontSize="md">
+          <FormControl fontSize="md" isInvalid={!!error?.response?.data?.tags}>
             <FormLabel>Tags</FormLabel>
             <CreatableSelect
               isMulti
@@ -318,11 +373,21 @@ const RecipeForm = ({ recipe: recipe_, onSave }: Props) => {
                 })
               }
             />
+            {error?.response?.data?.tags && (
+              <FormErrorMessage>
+                {error.response.data.tags[0].name}
+              </FormErrorMessage>
+            )}
           </FormControl>
         </Stack>
       </CardBody>
       <CardFooter justifyContent="end">
-        <Button variant="ghost" colorScheme="orange" isDisabled={isError} onClick={onRecipeSave}>
+        <Button
+          variant="ghost"
+          colorScheme="orange"
+          isDisabled={isError}
+          onClick={onRecipeSave}
+        >
           Save
         </Button>
       </CardFooter>
