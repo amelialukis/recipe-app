@@ -5,6 +5,7 @@ import uuid
 import os
 
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -64,36 +65,58 @@ class Recipe(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    time_minutes = models.IntegerField()
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    time_minutes = models.IntegerField(validators=[MinValueValidator(1)])
+    price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField("Tag")
-    ingredients = models.ManyToManyField("Ingredient")
+    ingredients = models.ManyToManyField("Quantity")
     image = models.ImageField(null=True, upload_to=recipe_image_file_path)
+    private = models.BooleanField(default=True)
+    procedures = models.TextField()
 
     def __str__(self):
         return self.title
 
 
-class Tag(models.Model):
+class BaseOnlyName(models.Model):
+    """Base model with only name field in lowercase"""
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        return super(BaseOnlyName, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(BaseOnlyName):
     """Tag for filtering recipes."""
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return self.name
 
 
-class Ingredient(models.Model):
+class Ingredient(BaseOnlyName):
     """Ingredient for recipes."""
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
+
+
+class Unit(BaseOnlyName):
+    """Ingredient unit for recipes."""
+
+    def __unicode__(self):
+        return self.name
+
+
+class Quantity(models.Model):
+    """Ingredient Quantity in Recipe."""
+    amount = models.DecimalField(decimal_places=2, max_digits=10, validators=[MinValueValidator(0.01)])
+    unit = models.ForeignKey("Unit", on_delete=models.CASCADE)
+    ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
+
+
+    class Meta:
+        verbose_name_plural = "Quantities"
 
     def __str__(self):
-        return self.name
+        return f"{self.amount} {self.unit.name} {self.ingredient.name}"
