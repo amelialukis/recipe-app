@@ -16,4 +16,6 @@ export interface RecipeType {
     ingredient: { id: number; name: string };
   }[];
   image?: string;
+  procedures: string;
+  user?: string;
 }

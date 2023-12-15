@@ -2,7 +2,7 @@ import { inputAnatomy } from "@chakra-ui/anatomy";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { definePartsStyle, defineMultiStyleConfig } =
-  createMultiStyleConfigHelpers(inputAnatomy.keys);
+    createMultiStyleConfigHelpers(inputAnatomy.keys);
 
 const orangeOutline = definePartsStyle({
   field: {

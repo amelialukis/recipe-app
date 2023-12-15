@@ -10,16 +10,16 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
 
-  api:
+  app:
     build:
-      context: ./api/
+      context: ./app/
       dockerfile: Dockerfile
       args:
         - DEV=true
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/app/api
+      - ./api:/app/app
       - dev-static-data:/vol/web
     command: >
       sh -c "python manage.py wait_for_db && 

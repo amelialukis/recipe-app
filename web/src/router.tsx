@@ -1,63 +1,63 @@
-import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom";
+import {createBrowserRouter, Navigate, RouteObject} from "react-router-dom";
 import AuthRoutes from "./features/Auth/router.tsx";
 import Layout from "./Layout.tsx";
-import { authenticatedUser } from "./api";
+import {authenticatedUser} from "./api";
 import Home from "./features/Home/Home.tsx";
-import { JSX, ReactNode } from "react";
+import {JSX, ReactNode} from "react";
 import ProfileRoutes from "./features/Profile/router.tsx";
 import RecipeRoutes from "./features/Recipes/router.tsx";
 import TagList from "./features/Filter/TagList.tsx";
 import IngredientList from "./features/Filter/IngredientList.tsx";
 
 const getAuthenticated = (element: JSX.Element | ReactNode) =>
-  authenticatedUser() ? element : <Navigate to="/login" />;
+    authenticatedUser() ? element : <Navigate to="/login"/>;
 
 const getAuthenticatedRoutes = (routes: RouteObject[]): RouteObject[] =>
-  routes.map((route) => {
-    if (route.children) {
-      return {
-        ...route,
-        element: getAuthenticated(route.element),
-        children: getAuthenticatedRoutes(route.children),
-      };
-    }
-    return {
-      ...route,
-      element: getAuthenticated(route.element),
-    };
-  });
+    routes.map((route) => {
+        if (route.children) {
+            return {
+                ...route,
+                element: getAuthenticated(route.element),
+                children: getAuthenticatedRoutes(route.children),
+            };
+        }
+        return {
+            ...route,
+            element: getAuthenticated(route.element),
+        };
+    });
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    children: [
-      {
+    {
         path: "/",
-        element: <Layout />,
         children: [
-          {
-            path: "/",
-            element: <Home />,
-          },
-          {
-            path: "profile",
-            children: getAuthenticatedRoutes(ProfileRoutes),
-          },
-          {
-            path: "recipe",
-            children: getAuthenticatedRoutes(RecipeRoutes),
-          },
-          {
-            path: "tag",
-            element: getAuthenticated(<TagList />),
-          },
-          {
-            path: "ingredient",
-            element: getAuthenticated(<IngredientList />),
-          },
+            {
+                path: "/",
+                element: <Layout/>,
+                children: [
+                    {
+                        path: "/",
+                        element: <Home/>,
+                    },
+                    {
+                        path: "profile",
+                        children: getAuthenticatedRoutes(ProfileRoutes),
+                    },
+                    {
+                        path: "recipe",
+                        children: getAuthenticatedRoutes(RecipeRoutes),
+                    },
+                    {
+                        path: "tag",
+                        element: getAuthenticated(<TagList/>),
+                    },
+                    {
+                        path: "ingredient",
+                        element: getAuthenticated(<IngredientList/>),
+                    },
+                ],
+            },
+            ...AuthRoutes,
         ],
-      },
-      ...AuthRoutes,
-    ],
-  },
+    },
 ]);
