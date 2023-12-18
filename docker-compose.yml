@@ -19,7 +19,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/app/app
+      - ./app:/app/app
       - dev-static-data:/vol/web
     command: >
       sh -c "python manage.py wait_for_db && 
@@ -49,7 +49,7 @@ services:
       - ./web:/app/web
       - /app/web/node_modules
     depends_on:
-      - api
+      - app
 
 volumes:
   dev-db-data:

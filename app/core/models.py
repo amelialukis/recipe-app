@@ -5,12 +5,14 @@ import uuid
 import os
 
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin
 )
+from django.db.models.functions import Lower
 
 
 def recipe_image_file_path(instance, filename):
@@ -64,36 +66,44 @@ class Recipe(models.Model):
     )
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    time_minutes = models.IntegerField()
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    time_minutes = models.IntegerField(validators=[MinValueValidator(1)])
+    price = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.0)])
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField("Tag")
-    ingredients = models.ManyToManyField("Ingredient")
+    ingredients = models.ManyToManyField("RecipeIngredient")
     image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     def __str__(self):
         return self.title
 
+class BaseRecipeAttrModel(models.Model):
+    """Base model for recipe attribute."""
+    name = models.CharField(max_length=255)
 
-class Tag(models.Model):
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()
+        super(BaseRecipeAttrModel, self).save(*args, **kwargs)
+
+
+class Tag(BaseRecipeAttrModel):
     """Tag for filtering recipes."""
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
 
-    def __str__(self):
-        return self.name
+class Unit(BaseRecipeAttrModel):
+    """Unit for recipe ingredient."""
 
-
-class Ingredient(models.Model):
+class Ingredient(BaseRecipeAttrModel):
     """Ingredient for recipes."""
-    name = models.CharField(max_length=255)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-    )
+
+class RecipeIngredient(models.Model):
+    amount = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.0)])
+    unit = models.ForeignKey("Unit", on_delete=models.CASCADE)
+    ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return f"{self.amount} {self.unit} {self.ingredient}"

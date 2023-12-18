@@ -50,8 +50,8 @@ class PrivateTagsApiTests(TestCase):
 
     def test_retrieve_tags(self):
         """Test retrieving a list of tags."""
-        Tag.objects.create(user=self.user, name="Vegan")
-        Tag.objects.create(user=self.user, name="Dessert")
+        Tag.objects.create(name="Vegan")
+        Tag.objects.create(name="Dessert")
 
         res = self.client.get(TAGS_URL)
 
@@ -60,25 +60,9 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_tags_limited_to_user(self):
-        """Test list of tags is limited to authenticated user."""
-        other_user = create_user(
-            email="other_user@example.com",
-            password="test4321"
-        )
-        Tag.objects.create(user=other_user, name="Fruity")
-        tag = Tag.objects.create(user=self.user, name="Comfort Food")
-
-        res = self.client.get(TAGS_URL)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["name"], tag.name)
-        self.assertEqual(res.data[0]["id"], tag.id)
-
     def test_update_tag(self):
         """Test updating a tag."""
-        tag = Tag.objects.create(user=self.user, name="After Dinner")
+        tag = Tag.objects.create(name="After Dinner")
 
         payload = {"name": "Dessert"}
         url = detail_url(tag.id)
@@ -86,23 +70,23 @@ class PrivateTagsApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         tag.refresh_from_db()
-        self.assertEqual(tag.name, payload["name"])
+        self.assertEqual(tag.name, payload["name"].lower())
 
     def test_delete_tag(self):
         """Test deleting a tag."""
-        tag = Tag.objects.create(user=self.user, name="Breakfast")
+        tag = Tag.objects.create(name="Breakfast")
 
         url = detail_url(tag.id)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        tags = Tag.objects.filter(user=self.user)
+        tags = Tag.objects.all()
         self.assertFalse(tags.exists())
 
     def test_filter_tags_assigned_to_recipes(self):
         """Test listing tags to those assigned to recipes."""
-        tag1 = Tag.objects.create(user=self.user, name="Breakfast")
-        tag2 = Tag.objects.create(user=self.user, name="Lunch")
+        tag1 = Tag.objects.create(name="Breakfast")
+        tag2 = Tag.objects.create(name="Lunch")
         recipe = Recipe.objects.create(
             title="Green Eggs on Toast",
             time_minutes=5,
@@ -121,8 +105,8 @@ class PrivateTagsApiTests(TestCase):
 
     def test_filtered_tags_unique(self):
         """Test filtered tag returns a unique list."""
-        tag = Tag.objects.create(user=self.user, name="Breakfast")
-        Tag.objects.create(user=self.user, name="Dinner")
+        tag = Tag.objects.create(name="Breakfast")
+        Tag.objects.create(name="Dinner")
         recipe1 = Recipe.objects.create(
             title="Pancakes",
             time_minutes=60,

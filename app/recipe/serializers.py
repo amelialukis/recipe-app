@@ -3,7 +3,7 @@ Serializers for recipe APIs.
 """
 from rest_framework import serializers
 
-from core.models import Recipe, Tag, Ingredient
+from core.models import Recipe, Tag, Ingredient, Unit, RecipeIngredient
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -11,6 +11,15 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
+        fields = ["id", "name"]
+        read_only_fields = ["id"]
+
+
+class UnitSerializer(serializers.ModelSerializer):
+    """Serializer for units."""
+
+    class Meta:
+        model = Unit
         fields = ["id", "name"]
         read_only_fields = ["id"]
 
@@ -24,10 +33,21 @@ class IngredientSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    """Serializer for recipe ingredients."""
+    unit = UnitSerializer()
+    ingredient = IngredientSerializer()
+
+    class Meta:
+        model = RecipeIngredient
+        fields = ["id", "amount", "unit", "ingredient"]
+        read_only_fields = ["id"]
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for recipes."""
     tags = TagSerializer(many=True, required=False)
-    ingredients = IngredientSerializer(many=True, required=False)
+    ingredients = RecipeIngredientSerializer(many=True, required=False)
 
     class Meta:
         model = Recipe
@@ -39,23 +59,28 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _get_or_create_tags(self, tags, recipe):
         """Handle getting or creating tags as needed."""
-        auth_user = self.context["request"].user
         for tag in tags:
             tag_obj, created = Tag.objects.get_or_create(
-                user=auth_user,
-                **tag,
+                name=tag["name"].lower(),
             )
             recipe.tags.add(tag_obj)
 
     def _get_or_create_ingredients(self, ingredients, recipe):
         """Handle getting or creating ingredients as needed."""
-        auth_user = self.context["request"].user
         for ingredient in ingredients:
-            ingredient_obj, created = Ingredient.objects.get_or_create(
-                user=auth_user,
-                **ingredient,
+            unit_obj, _ = Unit.objects.get_or_create(
+                name=ingredient["unit"]["name"].lower()
             )
-            recipe.ingredients.add(ingredient_obj)
+            ingredient_obj, _ = Ingredient.objects.get_or_create(
+                name=ingredient["ingredient"]["name"].lower()
+            )
+
+            recipe_ingredient_obj, created = RecipeIngredient.objects.get_or_create(
+                amount=ingredient["amount"],
+                unit=unit_obj,
+                ingredient=ingredient_obj,
+            )
+            recipe.ingredients.add(recipe_ingredient_obj)
 
     def create(self, validated_data):
         """Create a recipe."""

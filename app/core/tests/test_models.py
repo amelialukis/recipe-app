@@ -75,20 +75,42 @@ class ModelTests(TestCase):
 
     def test_create_tag(self):
         """Test creating a tag is successful."""
-        user = create_user()
-        tag = models.Tag.objects.create(user=user, name="Tag1")
+        tag = models.Tag.objects.create(name="Tag1")
 
-        self.assertEqual(str(tag), tag.name)
+        self.assertEqual(str(tag), tag.name.lower())
+
+    def test_create_unit(self):
+        """Test creating a tag is successful."""
+        unit = models.Unit.objects.create(name="Unit1")
+
+        self.assertEqual(str(unit), unit.name.lower())
 
     def test_create_ingredient(self):
         """Test creating an ingredient is successful."""
-        user = create_user()
         ingredient = models.Ingredient.objects.create(
-            user=user,
             name="Ingredient1"
         )
 
-        self.assertEqual(str(ingredient), ingredient.name)
+        self.assertEqual(
+            str(ingredient),
+            ingredient.name.lower()
+        )
+
+    def test_recipe_ingredients(self):
+        unit = models.Unit.objects.create(name="Unit1")
+        ingredient = models.Ingredient.objects.create(
+            name="Ingredient1"
+        )
+        recipe_ingredient = models.RecipeIngredient.objects.create(
+            amount=1,
+            unit=unit,
+            ingredient=ingredient,
+        )
+
+        self.assertEqual(
+            str(recipe_ingredient),
+            f"{recipe_ingredient.amount} {unit.name.lower()} {ingredient.name.lower()}"
+        )
 
     @patch("core.models.uuid.uuid4")
     def test_recipe_file_name_uuid(self, mock_uuid):

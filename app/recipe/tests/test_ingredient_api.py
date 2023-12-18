@@ -10,7 +10,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, Recipe
+from core.models import Ingredient, Recipe, RecipeIngredient, Unit
 
 from recipe.serializers import IngredientSerializer
 
@@ -51,8 +51,8 @@ class PrivateIngredientsApiTests(TestCase):
 
     def test_retrieve_ingredients(self):
         """Test retrieving a list of ingredients."""
-        Ingredient.objects.create(user=self.user, name="Kale")
-        Ingredient.objects.create(user=self.user, name="Vanilla")
+        Ingredient.objects.create(name="Kale")
+        Ingredient.objects.create(name="Vanilla")
 
         res = self.client.get(INGREDIENTS_URL)
 
@@ -61,22 +61,9 @@ class PrivateIngredientsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_ingredients_limited_to_user(self):
-        """Test list of ingredients is limited to authenticated user."""
-        other_user = create_user(email="other_user@example.com")
-        Ingredient.objects.create(user=other_user, name="Salt")
-        ingredient = Ingredient.objects.create(user=self.user, name="Pepper")
-
-        res = self.client.get(INGREDIENTS_URL)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["name"], ingredient.name)
-        self.assertEqual(res.data[0]["id"], ingredient.id)
-
     def test_update_ingredient(self):
         """Test updating an ingredient."""
-        ingredient = Ingredient.objects.create(user=self.user, name="Cilantro")
+        ingredient = Ingredient.objects.create(name="Cilantro")
 
         payload = {"name": "Coriander"}
         url = detail_url(ingredient.id)
@@ -84,30 +71,36 @@ class PrivateIngredientsApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
-        self.assertEqual(ingredient.name, payload["name"])
+        self.assertEqual(ingredient.name, payload["name"].lower())
 
     def test_delete_ingredient(self):
         """Test deleting an ingredient."""
-        ingredient = Ingredient.objects.create(user=self.user, name="Lettuce")
+        ingredient = Ingredient.objects.create(name="Lettuce")
 
         url = detail_url(ingredient.id)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        ingredients = Ingredient.objects.filter(user=self.user)
+        ingredients = Ingredient.objects.all()
         self.assertFalse(ingredients.exists())
 
     def test_filter_ingredients_assigned_to_recipes(self):
         """Test listing ingredients by those assigned to recipes."""
-        in1 = Ingredient.objects.create(user=self.user, name="Apples")
-        in2 = Ingredient.objects.create(user=self.user, name="Turkey")
+        unit = Unit.objects.create(name="unit")
+        in1 = Ingredient.objects.create(name="Apples")
+        in2 = Ingredient.objects.create(name="Turkey")
+        rcp_in1 = RecipeIngredient.objects.create(
+            amount=1,
+            unit=unit,
+            ingredient=in1
+        )
         recipe = Recipe.objects.create(
             title="Apple Crumble",
             time_minutes=5,
             price=Decimal("4.50"),
             user=self.user,
         )
-        recipe.ingredients.add(in1)
+        recipe.ingredients.add(rcp_in1)
 
         res = self.client.get(INGREDIENTS_URL, {"assigned_only": 1})
 
@@ -119,8 +112,14 @@ class PrivateIngredientsApiTests(TestCase):
 
     def test_filtered_ingredients_unique(self):
         """Test filtered ingredient returns a unique list."""
-        ing = Ingredient.objects.create(user=self.user, name="Eggs")
-        Ingredient.objects.create(user=self.user, name="Lentils")
+        unit = Unit.objects.create(name="unit")
+        ing = Ingredient.objects.create(name="Eggs")
+        Ingredient.objects.create(name="Lentils")
+        rcp_ing = RecipeIngredient.objects.create(
+            amount=1,
+            unit=unit,
+            ingredient=ing
+        )
         recipe1 = Recipe.objects.create(
             title="Eggs Benedict",
             time_minutes=60,
@@ -133,8 +132,8 @@ class PrivateIngredientsApiTests(TestCase):
             price=Decimal("5.00"),
             user=self.user
         )
-        recipe1.ingredients.add(ing)
-        recipe2.ingredients.add(ing)
+        recipe1.ingredients.add(rcp_ing)
+        recipe2.ingredients.add(rcp_ing)
 
         res = self.client.get(INGREDIENTS_URL, {"assigned_only": 1})
 
