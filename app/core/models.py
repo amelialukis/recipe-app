@@ -72,6 +72,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField("Tag")
     ingredients = models.ManyToManyField("RecipeIngredient")
     image = models.ImageField(null=True, upload_to=recipe_image_file_path)
+    private = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -98,9 +99,10 @@ class Unit(BaseRecipeAttrModel):
     """Unit for recipe ingredient."""
 
 class Ingredient(BaseRecipeAttrModel):
-    """Ingredient for recipes."""
+    """List of ingredients."""
 
 class RecipeIngredient(models.Model):
+    """Ingredient for recipes."""
     amount = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.0)])
     unit = models.ForeignKey("Unit", on_delete=models.CASCADE)
     ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)

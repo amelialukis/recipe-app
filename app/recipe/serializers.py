@@ -48,14 +48,15 @@ class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for recipes."""
     tags = TagSerializer(many=True, required=False)
     ingredients = RecipeIngredientSerializer(many=True, required=False)
+    user = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = [
             "id", "title", "time_minutes", "price", "link", "tags",
-            "ingredients",
+            "ingredients", "user",
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id", "user"]
 
     def _get_or_create_tags(self, tags, recipe):
         """Handle getting or creating tags as needed."""
@@ -109,6 +110,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def get_user(self, obj):
+        request = self.context.get("request")
+        return obj.user.name if request and obj.user != request.user else ""
 
 class RecipeDetailSerializer(RecipeSerializer):
     """Serializer for recipe detail view."""

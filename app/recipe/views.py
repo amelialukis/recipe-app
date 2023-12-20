@@ -1,6 +1,7 @@
 """
 Views for recipe APIs.
 """
+from django.db.models import Q
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -14,7 +15,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from core.models import Recipe, Tag, Ingredient, Unit
-from recipe import serializers
+from recipe import serializers, permissions
+
 
 
 @extend_schema_view(
@@ -40,7 +42,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RecipeDetailSerializer
     queryset = Recipe.objects.all()
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.RecipePermission]
 
     def _params_to_ints(self, qs):
         """Convert a list of strings to integers."""
@@ -50,6 +52,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Retrieve recipes for authenticated user."""
         tags = self.request.query_params.get("tags")
         ingredients = self.request.query_params.get("ingredients")
+        my_recipe = self.request.query_params.get("my_recipe")
         queryset = self.queryset
         if tags:
             tags_ids = self._params_to_ints(tags)
@@ -57,9 +60,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if ingredients:
             ingredient_ids = self._params_to_ints(ingredients)
             queryset = queryset.filter(ingredients__ingredient__id__in=ingredient_ids)
+        if my_recipe:
+            return queryset.filter(
+                user=self.request.user
+            ).order_by("-id") \
+                .distinct()
 
         return queryset.filter(
-            user=self.request.user
+            Q(user=self.request.user) | Q(private=False)
         ).order_by("-id")\
             .distinct()
 
@@ -71,6 +79,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return serializers.RecipeImageSerializer
 
         return self.serializer_class
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({"request": self.request})
+        return context
 
     def perform_create(self, serializer):
         """Create new recipe."""
