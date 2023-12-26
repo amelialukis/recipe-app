@@ -41,6 +41,7 @@ def create_recipe(user, **params):
         "price": Decimal("2.99"),
         "description": "Sample description.",
         "link": "http://example.com/recipes",
+        "procedures": "1. Bla bla bla...",
     }
     defaults.update(params)
 
@@ -154,7 +155,8 @@ class PrivateRecipeApiTests(TestCase):
         payload = {
             "title": "Sample recipe",
             "time_minutes": 30,
-            "price": Decimal("3.40")
+            "price": Decimal("3.40"),
+            "procedures": "1. Bla bla bla...",
         }
         res = self.client.post(RECIPES_URL, payload)
 
@@ -198,6 +200,7 @@ class PrivateRecipeApiTests(TestCase):
             "description": "New recipe description.",
             "time_minutes": 15,
             "price": Decimal("7.80"),
+            "procedures": "1. Bla bla bla...",
         }
         url = detail_url(recipe.id)
         res = self.client.put(url, payload)
@@ -256,6 +259,7 @@ class PrivateRecipeApiTests(TestCase):
             "title": "Thai Curry",
             "time_minutes": 30,
             "price": Decimal("3"),
+            "procedures": "1. Bla bla bla...",
             "tags": [{"name": "Thai"}, {"name": "Dinner"}]
         }
 
@@ -279,6 +283,7 @@ class PrivateRecipeApiTests(TestCase):
             "title": "Pongal",
             "time_minutes": 60,
             "price": Decimal("3.75"),
+            "procedures": "1. Bla bla bla...",
             "tags": [{"name": "Indian"}, {"name": "Breakfast"}]
         }
 
@@ -342,6 +347,7 @@ class PrivateRecipeApiTests(TestCase):
             "title": "Thai Curry",
             "time_minutes": 30,
             "price": Decimal("3"),
+            "procedures": "1. Bla bla bla...",
             "ingredients": [
                 {
                     "amount": 10,
@@ -384,6 +390,7 @@ class PrivateRecipeApiTests(TestCase):
             "title": "Thai Curry",
             "time_minutes": 60,
             "price": "2.55",
+            "procedures": "1. Bla bla bla...",
             "ingredients": [
                 {
                     "amount": 10,
