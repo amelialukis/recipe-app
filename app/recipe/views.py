@@ -50,10 +50,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Retrieve recipes for authenticated user."""
+        title = self.request.query_params.get("title")
         tags = self.request.query_params.get("tags")
         ingredients = self.request.query_params.get("ingredients")
         my_recipe = self.request.query_params.get("my_recipe")
         queryset = self.queryset
+        if title:
+            queryset = queryset.filter(title__icontains=title)
         if tags:
             tags_ids = self._params_to_ints(tags)
             queryset = queryset.filter(tags__id__in=tags_ids)

@@ -550,6 +550,21 @@ class PrivateRecipeApiTests(TestCase):
         self.assertIn(s2.data, res.data)
         self.assertNotIn(s3.data, res.data)
 
+    def test_search_recipe_by_name(self):
+        recipe_name = "Fresh Salad"
+        for i in [self.user, self.other_user]:
+            create_recipe(user=i, title=recipe_name, private=False)
+            create_recipe(user=i, private=False)
+
+        payload = {"title": "salad"}
+        res1 = self.client.get(RECIPES_URL)
+        res2 = self.client.get(RECIPES_URL, payload)
+
+        self.assertEqual(4, len(res1.data))
+        self.assertEqual(2, len(res2.data))
+        for i in res2.data:
+            self.assertIn(payload["title"].lower(), i["title"].lower())
+
 
 class ImageUploadTests(TestCase):
     """Test for the image upload API."""
