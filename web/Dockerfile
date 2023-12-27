@@ -1,12 +1,10 @@
 FROM node:alpine3.17
-LABEL authors="amelialukis"
 
-WORKDIR /app/web
+WORKDIR /cache
 
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
 
-EXPOSE 3000
-
-CMD ["npm", "run", "dev"]
+WORKDIR /app/web
+ENV PATH /app/web/node_modules/.bin:$PATH

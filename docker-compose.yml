@@ -44,7 +44,8 @@ services:
     ports:
       - "3000:3000"
     command: >
-      sh -c "npm run dev"
+      sh -c "cp -rfu /cache/node_modules/. /app/web/node_modules/  
+      && npm run dev"
     volumes:
       - ./web:/app/web
       - /app/web/node_modules
