@@ -3,6 +3,7 @@ import RecipeList from "./RecipeList.tsx";
 import RecipeDetail from "./RecipeDetail.tsx";
 import RecipeAdd from "./RecipeAdd.tsx";
 import RecipeEdit from "./RecipeEdit.tsx";
+import RecipeUploadImage from "./RecipeUploadImage.tsx";
 
 const RecipeRoutes: RouteObject[] = [
   {
@@ -20,6 +21,10 @@ const RecipeRoutes: RouteObject[] = [
         path: "edit",
         element: <RecipeEdit />,
       },
+      {
+        path: "upload-image",
+        element: <RecipeUploadImage />
+      }
     ],
   },
   {

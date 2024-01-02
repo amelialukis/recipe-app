@@ -6,7 +6,6 @@ import {
   Grid,
   GridItem,
   HStack,
-  Image,
   Stack,
   StackDivider,
   Tag,
@@ -23,10 +22,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { USD } from "../../currencyFormat.ts";
 import RecipeDetailAccordion from "./RecipeDetailAccordion.tsx";
 import RecipeDetailTab from "./RecipeDetailTab.tsx";
-import tableware from "../../assets/images/thumbnail_syokki_plastic_fork.jpg";
 import useGetRecipeDetail from "./hooks/useGetRecipeDetail.ts";
 import LoadSpinner from "../LoadSpinner.tsx";
 import {RecipeType} from "./types";
+import RecipeImagePopover from "./RecipeImagePopover.tsx";
 
 const RecipeDetail = () => {
   const { recipeId } = useParams();
@@ -66,12 +65,7 @@ const RecipeDetail = () => {
               display="flex"
               justifyContent="center"
             >
-              <Image
-                src={recipe?.image || tableware}
-                w="45vh"
-                maxH="45vh"
-                objectFit="cover"
-              />
+              <RecipeImagePopover image={recipe?.image}/>
             </GridItem>
             <GridItem colSpan={{ lg: 2 }}>
               <Card
