@@ -19,9 +19,10 @@ interface Props {
     unit: { id: number; name: string };
     ingredient: { id: number; name: string };
   }[];
+  procedures: string;
 }
 
-const RecipeDetailAccordion = ({ desc, ingredients }: Props) => {
+const RecipeDetailAccordion = ({ desc, ingredients, procedures }: Props) => {
   return (
     <Stack mx="10px">
       <Accordion allowMultiple borderColor="orange.100">
@@ -71,7 +72,9 @@ const RecipeDetailAccordion = ({ desc, ingredients }: Props) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel px={0}>
-            <Box></Box>
+            <Box>
+              <Text>{procedures}</Text>
+            </Box>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>

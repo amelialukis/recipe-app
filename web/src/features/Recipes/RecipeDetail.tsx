@@ -121,6 +121,7 @@ const RecipeDetail = () => {
               <RecipeDetailAccordion
                 desc={recipe.description}
                 ingredients={recipe.ingredients}
+                procedures={recipe.procedures}
               />
             </GridItem>
 
@@ -155,6 +156,7 @@ const RecipeDetail = () => {
             <RecipeDetailTab
               desc={recipe.description}
               ingredients={recipe.ingredients}
+              procedures={recipe.procedures}
             />
           </Box>
         </Stack>

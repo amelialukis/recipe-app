@@ -18,9 +18,10 @@ interface Props {
     unit: { id: number; name: string };
     ingredient: { id: number; name: string };
   }[];
+  procedures: string;
 }
 
-const RecipeDetailTab = ({ desc, ingredients }: Props) => {
+const RecipeDetailTab = ({ desc, ingredients, procedures }: Props) => {
   return (
     <Box my="20px">
       <Tabs
@@ -47,6 +48,9 @@ const RecipeDetailTab = ({ desc, ingredients }: Props) => {
                 </ListItem>
               ))}
             </UnorderedList>
+          </TabPanel>
+          <TabPanel>
+            {procedures}
           </TabPanel>
         </TabPanels>
       </Tabs>
