@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
-import { Box, Button, Card, CardHeader, CardBody, Image, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Card, CardHeader, CardBody, Image, HStack, Stack, Text, useToast } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 import useUploadImage from "./hooks/useUploadImage.ts";
 
@@ -18,8 +18,9 @@ const RecipeUploadImage = () => {
         }
     });
     const { recipeId } = useParams()
-    const { mutate, isSuccess } = useUploadImage(recipeId);
+    const { mutate, isSuccess, error } = useUploadImage(recipeId);
     const navigate = useNavigate()
+    const toast = useToast()
 
     useEffect(() => {
         return () => files.forEach(file => URL.revokeObjectURL(file.preview));
@@ -35,7 +36,16 @@ const RecipeUploadImage = () => {
         if (isSuccess) {
             navigate(`/recipe/${recipeId}`)
         }
-    }, [isSuccess]);
+        if (error) {
+            toast({
+                title: "Error",
+                description: error.message,
+                status: "error",
+                isClosable: true,
+                onCloseComplete: () => error.response?.status === 403 && navigate(-1)
+            })
+        }
+    }, [isSuccess, error]);
 
     return (
         <Box

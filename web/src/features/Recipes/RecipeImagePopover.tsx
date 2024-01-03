@@ -16,9 +16,10 @@ import useUploadImage from "./hooks/useUploadImage.ts";
 
 interface Props{
     image?: string;
+    user?: string;
 }
 
-const RecipeImagePopover = ({ image }: Props) => {
+const RecipeImagePopover = ({ image, user }: Props) => {
     const { recipeId } = useParams()
     const navigate = useNavigate()
     const {mutate, isSuccess} = useUploadImage(recipeId)
@@ -45,7 +46,12 @@ const RecipeImagePopover = ({ image }: Props) => {
                     objectFit="cover"
                 />
             </PopoverTrigger>
-            <PopoverContent borderColor="orange.100" w="100%" _focusVisible={{"outlineColor": "orange.100"}}>
+            <PopoverContent
+                borderColor="orange.100"
+                w="100%"
+                _focusVisible={{"outlineColor": "orange.100"}}
+                display={user && "none"}
+            >
                 <PopoverHeader borderColor="orange.100">Change Recipe Image</PopoverHeader>
                 <PopoverArrow />
                 <PopoverBody>

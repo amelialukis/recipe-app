@@ -36,6 +36,12 @@ const RecipeEdit = () => {
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    if (editRecipe?.user) {
+      navigate(`/recipe/${recipeId}/`)
+    }
+  }, [editRecipe]);
+
   return (
     <Stack>
       {isError && (

@@ -65,7 +65,7 @@ const RecipeDetail = () => {
               display="flex"
               justifyContent="center"
             >
-              <RecipeImagePopover image={recipe?.image}/>
+              <RecipeImagePopover image={recipe?.image} user={recipe?.user}/>
             </GridItem>
             <GridItem colSpan={{ lg: 2 }}>
               <Card
@@ -77,18 +77,20 @@ const RecipeDetail = () => {
                 <CardHeader>
                   <HStack justifyContent="space-between">
                     <Text fontSize="xl" fontWeight="600">
-                      {recipe.title}
+                      {recipe?.title}
                     </Text>
-                    <Tooltip label="Edit recipe.">
-                      <IconButton
-                        aria-label="edit recipe"
-                        icon={<EditIcon />}
-                        variant="outline"
-                        colorScheme="orange"
-                        color="orange.200"
-                        onClick={() => navigate(`/recipe/${recipe.id}/edit`)}
-                      />
-                    </Tooltip>
+                    {!recipe?.user &&
+                      <Tooltip label="Edit recipe.">
+                        <IconButton
+                          aria-label="edit recipe"
+                          icon={<EditIcon />}
+                          variant="outline"
+                          colorScheme="orange"
+                          color="orange.200"
+                          onClick={() => navigate(`/recipe/${recipe.id}/edit`)}
+                        />
+                      </Tooltip>
+                    }
                   </HStack>
                 </CardHeader>
 
@@ -99,20 +101,26 @@ const RecipeDetail = () => {
                   >
                     <HStack justifyContent="space-between">
                       <Text>Price</Text>
-                      <Text>{recipe.price && USD.format(recipe.price)}</Text>
+                      <Text>{recipe?.price && USD.format(recipe.price)}</Text>
                     </HStack>
                     <HStack justifyContent="space-between">
                       <Text>Time</Text>
-                      {recipe.timeMinutes &&
+                      {recipe?.timeMinutes &&
                         <Text>{recipe.timeMinutes} minute(s)</Text>
                       }
                     </HStack>
                     <HStack justifyContent="space-between">
                       <Text>Link</Text>
-                      <Link href={recipe.link} isExternal>
-                        {recipe.link}
+                      <Link href={recipe?.link} isExternal>
+                        {recipe?.link}
                       </Link>
                     </HStack>
+                    {recipe?.user &&
+                        <HStack justifyContent="space-between">
+                          <Text>Recipe by</Text>
+                          <Text>{recipe.user}</Text>
+                        </HStack>
+                    }
                   </Stack>
                 </CardBody>
               </Card>

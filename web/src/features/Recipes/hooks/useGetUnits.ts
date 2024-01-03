@@ -10,7 +10,7 @@ interface Unit{
 const useGetUnits = () => {
     return useQuery<AxiosResponse<Unit[]>>({
         queryKey: ["unit"],
-        queryFn: () => client.get("/api/recipe/units/")
+        queryFn: () => client.get("/api/recipe/unit/")
     })
 }
 
