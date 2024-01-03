@@ -17,5 +17,6 @@ export interface RecipeType {
   }[];
   image?: string;
   procedures: string;
+  private: boolean;
   user?: string;
 }

@@ -1,4 +1,5 @@
-import { Box, Card, Image, Stack, Tag, Text } from "@chakra-ui/react";
+import { Box, Card, HStack, Image, Stack, Tag, Text, Tooltip } from "@chakra-ui/react";
+import { AtSignIcon, LockIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import tableware from "../../assets/images/thumbnail_syokki_plastic_fork.jpg";
 import { USD } from "../../currencyFormat.ts";
@@ -36,11 +37,23 @@ const RecipeCard = ({ recipe }: Props) => {
           >
             <Image src={recipe.image || tableware} objectFit="cover" />
           </Box>
-          <Text fontWeight="600">{recipe.title}</Text>
+          <HStack>
+            <Text fontWeight="600">{recipe.title}</Text>
+            {recipe.private &&
+                <Tooltip label="Private Recipe.">
+                  <LockIcon />
+                </Tooltip>
+            }
+            {!recipe.user &&
+                <Tooltip label="My Recipe.">
+                  <AtSignIcon />
+                </Tooltip>
+            }
+          </HStack>
           <Text fontSize="md">{USD.format(recipe.price)}</Text>
           <Text fontSize="md">{recipe.timeMinutes} minute(s)</Text>
           <Box display="block">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
               <Tag key={tag.name} colorScheme="orange" w="auto" mr="5px">
                 {tag.name}
               </Tag>

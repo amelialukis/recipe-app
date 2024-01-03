@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import RecipeCard from "./RecipeCard.tsx";
 import RecipeFilter from "./RecipeFilter.tsx";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, AtSignIcon, RepeatIcon } from "@chakra-ui/icons";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import useGetRecipes from "./hooks/useGetRecipes.ts";
 import LoadSpinner from "../LoadSpinner.tsx";
@@ -68,16 +68,50 @@ const RecipeList = () => {
                 <Text fontSize="3xl" fontWeight="300" pl="10px">
                   Recipes
                 </Text>
-                <Tooltip label="Add a new recipe.">
-                  <IconButton
-                    aria-label="new recipe"
-                    icon={<AddIcon />}
-                    variant="outline"
-                    colorScheme="orange"
-                    color="orange.200"
-                    onClick={() => navigate("/recipe/add")}
-                  />
-                </Tooltip>
+                <HStack>
+                  {!searchParams.get("my_recipe") &&
+                    <Tooltip label="Go to my recipes.">
+                      <IconButton
+                          aria-label="my recipe"
+                          icon={<AtSignIcon />}
+                          variant="outline"
+                          colorScheme="orange"
+                          color="orange.200"
+                          onClick={() => {
+                            searchParams.set("my_recipe", "true")
+                            setSearchParams(searchParams)
+                            refetch()
+                          }}
+                      />
+                    </Tooltip>
+                  }
+                  <Tooltip label="Reset filter.">
+                    <IconButton
+                        aria-label="reset filter"
+                        icon={<RepeatIcon />}
+                        variant="outline"
+                        colorScheme="orange"
+                        color="orange.200"
+                        onClick={() => {
+                          searchParams.delete("my_recipe")
+                          searchParams.delete("tags")
+                          searchParams.delete("ingredients")
+                          setSearchParams(searchParams)
+                          navigate(0)
+                        }}
+                    />
+                  </Tooltip>
+                  <Tooltip label="Add a new recipe.">
+                    <IconButton
+                      aria-label="new recipe"
+                      icon={<AddIcon />}
+                      variant="outline"
+                      colorScheme="orange"
+                      color="orange.200"
+                      onClick={() => navigate("/recipe/add")}
+                    />
+                  </Tooltip>
+                </HStack>
               </HStack>
               <Accordion
                 hideFrom="lg"
