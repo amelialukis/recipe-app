@@ -20,6 +20,7 @@ import {useNavigate, useSearchParams} from "react-router-dom";
 import useGetRecipes from "./hooks/useGetRecipes.ts";
 import LoadSpinner from "../LoadSpinner.tsx";
 import getParams from "./utils/getParams.ts";
+import RecipeSearch from "./RecipeSearch.tsx";
 
 const RecipeList = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -30,6 +31,12 @@ const RecipeList = () => {
   const onFilter = (tags: number[] | [], ingredients: number[] | []) =>{
     searchParams.set("tags", tags.length > 0 ? tags.join(",") : "")
     searchParams.set("ingredients", ingredients.length > 0 ? ingredients.join(","): "")
+    setSearchParams(searchParams)
+    refetch()
+  }
+
+  const onSearch = (search: string) => {
+    searchParams.set("title", search)
     setSearchParams(searchParams)
     refetch()
   }
@@ -96,6 +103,7 @@ const RecipeList = () => {
                           searchParams.delete("my_recipe")
                           searchParams.delete("tags")
                           searchParams.delete("ingredients")
+                          searchParams.delete("title")
                           setSearchParams(searchParams)
                           navigate(0)
                         }}
@@ -113,6 +121,7 @@ const RecipeList = () => {
                   </Tooltip>
                 </HStack>
               </HStack>
+              <RecipeSearch onSearch={onSearch}/>
               <Accordion
                 hideFrom="lg"
                 allowToggle
