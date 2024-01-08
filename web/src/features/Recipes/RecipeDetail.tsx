@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   Box,
   Card,
@@ -33,8 +33,8 @@ import RecipeLockUnlockAlert from "./RecipeLockUnlockAlert.tsx";
 
 const RecipeDetail = () => {
   const { recipeId } = useParams();
-  const { data, isError, isLoading, refetch } = useGetRecipeDetail(recipeId);
-  const { mutate } = useEditRecipeDetail(recipeId);
+  const { data, isError, isLoading } = useGetRecipeDetail(recipeId);
+  const { mutate, isSuccess } = useEditRecipeDetail(recipeId);
   const recipe = data?.data ? data.data: {} as RecipeType;
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -42,9 +42,14 @@ const RecipeDetail = () => {
 
   const onToggle = () => {
     mutate({private: !recipe.private})
-    refetch()
     onClose()
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(0)
+    }
+  }, [isSuccess]);
 
   return (
     <Stack>
