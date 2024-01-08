@@ -4,7 +4,7 @@ import { RecipeType } from "../types";
 import {AxiosError, AxiosResponse} from "axios";
 
 const useEditRecipeDetail = (id: string | undefined) => {
-  return useMutation<AxiosResponse<RecipeType>, AxiosError, object>({
+  return useMutation<AxiosResponse<RecipeType>, AxiosError<RecipeType>, object>({
     mutationFn: (recipe) => client.patch(`/api/recipe/recipes/${id}/`, recipe),
   });
 };

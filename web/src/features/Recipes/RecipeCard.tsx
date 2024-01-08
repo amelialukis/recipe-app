@@ -11,7 +11,7 @@ interface Props {
 
 const RecipeCard = ({ recipe }: Props) => {
   const navigate = useNavigate();
-  const tags = recipe.tags.length <= 5 ? recipe.tags : recipe.tags.slice(0, 3);
+  const tags = recipe.tags && (recipe.tags.length <= 5 ? recipe.tags : recipe.tags.slice(0, 3));
   return (
     <Box>
       <Card
@@ -37,18 +37,20 @@ const RecipeCard = ({ recipe }: Props) => {
           >
             <Image src={recipe.image || tableware} objectFit="cover" />
           </Box>
-          <HStack>
+          <HStack justifyContent="space-between">
             <Text fontWeight="600">{recipe.title}</Text>
-            {recipe.private &&
-                <Tooltip label="Private Recipe.">
-                  <LockIcon />
-                </Tooltip>
-            }
-            {!recipe.user &&
-                <Tooltip label="My Recipe.">
-                  <AtSignIcon />
-                </Tooltip>
-            }
+            <HStack spacing={1}>
+              {recipe.private &&
+                  <Tooltip label="Private Recipe.">
+                    <LockIcon />
+                  </Tooltip>
+              }
+              {!recipe.user &&
+                  <Tooltip label="My Recipe.">
+                    <AtSignIcon />
+                  </Tooltip>
+              }
+            </HStack>
           </HStack>
           <Text fontSize="md">{USD.format(recipe.price)}</Text>
           <Text fontSize="md">{recipe.timeMinutes} minute(s)</Text>
@@ -58,11 +60,11 @@ const RecipeCard = ({ recipe }: Props) => {
                 {tag.name}
               </Tag>
             ))}
-            {recipe.tags.length > 5 && (
+            {recipe.tags && (recipe.tags.length > 5 && (
               <Tag w="auto" bg="white">
                 +{recipe.tags.length - 3} more
               </Tag>
-            )}
+            ))}
           </Box>
         </Stack>
       </Card>

@@ -5,7 +5,7 @@ const getParams = (params: URLSearchParams) => {
 }
 
 const splitParams = (key: string, params: URLSearchParams) => {
-    return params.get(key)? params.get(key).split(",").map(value => parseInt(value)) : []
+    return params.get(key) ? params.get(key)?.split(",").map(value => parseInt(value)) : []
 }
 
 export default getParams
