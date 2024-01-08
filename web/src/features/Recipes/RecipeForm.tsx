@@ -344,6 +344,37 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
               </FormErrorMessage>
             )}
           </FormControl>
+          <FormControl isInvalid={!!errMessage?.procedures}>
+            <FormLabel>How to cook</FormLabel>
+            <Textarea
+                id="procedures"
+                resize="vertical"
+                borderColor="orange.100"
+                _hover={{
+                  borderColor: "orange.200",
+                }}
+                _focusVisible={{
+                  border: "2px solid",
+                  borderColor: "orange.300",
+                }}
+                _disabled={{
+                  bg: "orange.50",
+                }}
+                placeholder="Example:
+1. ...
+2. ...
+3. ..."
+                value={recipe.procedures}
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setRecipe({ ...recipe, procedures: event.target.value })
+                }
+            />
+            {errMessage?.procedures && (
+                <FormErrorMessage>
+                  {errMessage.procedures}
+                </FormErrorMessage>
+            )}
+          </FormControl>
           <FormControl isInvalid={!!errMessage?.link}>
             <FormLabel>Link</FormLabel>
             <Input
