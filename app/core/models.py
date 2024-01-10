@@ -12,7 +12,6 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin
 )
-from django.db.models.functions import Lower
 
 
 def recipe_image_file_path(instance, filename):
@@ -67,7 +66,11 @@ class Recipe(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     time_minutes = models.IntegerField(validators=[MinValueValidator(1)])
-    price = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.0)])
+    price = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0.0)]
+    )
     link = models.CharField(max_length=255, blank=True)
     tags = models.ManyToManyField("Tag")
     ingredients = models.ManyToManyField("RecipeIngredient")
@@ -77,6 +80,7 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class BaseRecipeAttrModel(models.Model):
     """Base model for recipe attribute."""
@@ -96,15 +100,22 @@ class BaseRecipeAttrModel(models.Model):
 class Tag(BaseRecipeAttrModel):
     """Tag for filtering recipes."""
 
+
 class Unit(BaseRecipeAttrModel):
     """Unit for recipe ingredient."""
+
 
 class Ingredient(BaseRecipeAttrModel):
     """List of ingredients."""
 
+
 class RecipeIngredient(models.Model):
     """Ingredient for recipes."""
-    amount = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.0)])
+    amount = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0.0)]
+    )
     unit = models.ForeignKey("Unit", on_delete=models.CASCADE)
     ingredient = models.ForeignKey("Ingredient", on_delete=models.CASCADE)
 

@@ -18,7 +18,6 @@ from core.models import Recipe, Tag, Ingredient, Unit
 from recipe import serializers, permissions
 
 
-
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -62,7 +61,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(tags__id__in=tags_ids)
         if ingredients:
             ingredient_ids = self._params_to_ints(ingredients)
-            queryset = queryset.filter(ingredients__ingredient__id__in=ingredient_ids)
+            queryset = queryset.filter(
+                ingredients__ingredient__id__in=ingredient_ids
+            )
         if my_recipe:
             return queryset.filter(
                 user=self.request.user
@@ -159,9 +160,10 @@ class IngredientViewSet(BaseRecipeAttrViewSet):
 
 
 class UnitViewSet(mixins.ListModelMixin,
-                mixins.UpdateModelMixin,
-                mixins.DestroyModelMixin,
-                viewsets.GenericViewSet):
+                  mixins.UpdateModelMixin,
+                  mixins.DestroyModelMixin,
+                  viewsets.GenericViewSet
+                  ):
     """View for manage units."""
     serializer_class = serializers.UnitSerializer
     authentication_classes = [TokenAuthentication]

@@ -76,11 +76,12 @@ class RecipeSerializer(serializers.ModelSerializer):
                 name=ingredient["ingredient"]["name"].lower()
             )
 
-            recipe_ingredient_obj, created = RecipeIngredient.objects.get_or_create(
-                amount=ingredient["amount"],
-                unit=unit_obj,
-                ingredient=ingredient_obj,
-            )
+            recipe_ingredient_obj, created = RecipeIngredient \
+                .objects.get_or_create(
+                    amount=ingredient["amount"],
+                    unit=unit_obj,
+                    ingredient=ingredient_obj,
+                )
             recipe.ingredients.add(recipe_ingredient_obj)
 
     def create(self, validated_data):
@@ -114,11 +115,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return obj.user.name if request and obj.user != request.user else ""
 
+
 class RecipeDetailSerializer(RecipeSerializer):
     """Serializer for recipe detail view."""
 
     class Meta(RecipeSerializer.Meta):
-        fields = RecipeSerializer.Meta.fields + ["description", "image", "procedures"]
+        fields = (RecipeSerializer.Meta.fields
+                  + ["description", "image", "procedures"])
 
 
 class RecipeImageSerializer(serializers.ModelSerializer):

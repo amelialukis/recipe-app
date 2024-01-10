@@ -242,7 +242,6 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Recipe.objects.filter(id=recipe.id).exists())
 
-
     def test_delete_other_user_non_private_recipe_error(self):
         """Test trying to delete another users recipe gives error."""
         recipe = create_recipe(user=self.other_user, private=False)
@@ -445,7 +444,8 @@ class PrivateRecipeApiTests(TestCase):
         self.assertIn(new_rcp_ing, recipe.ingredients.all())
 
     def test_update_recipe_assign_unit_ingredient(self):
-        """Test assigning an existing unit & ingredient when updating a recipe."""
+        """Test assigning an existing unit
+        & ingredient when updating a recipe."""
         ingredient_salt = Ingredient.objects.create(name="Salt")
         unit_gr = Unit.objects.create(name="gr")
         rcp_ing = RecipeIngredient.objects.create(
@@ -461,8 +461,12 @@ class PrivateRecipeApiTests(TestCase):
             "ingredients": [
                 {
                     "amount": 100,
-                     "unit": {"name": "gr"},
-                     "ingredient": {"name": "Sugar"}
+                    "unit": {
+                        "name": "gr"
+                    },
+                    "ingredient": {
+                        "name": "Sugar"
+                    },
                 }
             ]
         }

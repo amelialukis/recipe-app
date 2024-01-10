@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class RecipePermission(permissions.BasePermission):
     """Permission for recipe views."""
 

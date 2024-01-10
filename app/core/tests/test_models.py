@@ -109,7 +109,11 @@ class ModelTests(TestCase):
 
         self.assertEqual(
             str(recipe_ingredient),
-            f"{recipe_ingredient.amount} {unit.name.lower()} {ingredient.name.lower()}"
+            "{amount} {unit} {ingredient}".format(
+                amount=recipe_ingredient.amount,
+                unit=unit.name.lower(),
+                ingredient=ingredient.name.lower(),
+            )
         )
 
     @patch("core.models.uuid.uuid4")
