@@ -56,7 +56,7 @@ const RecipeCard = ({ recipe }: Props) => {
           <Text fontSize="md">{recipe.timeMinutes} minute(s)</Text>
           <Box display="block">
             {tags?.map((tag) => (
-              <Tag key={tag.name} colorScheme="orange" w="auto" mr="5px">
+              <Tag key={tag.name} colorScheme="orange" w="auto" mr="5px" textTransform="capitalize">
                 {tag.name}
               </Tag>
             ))}

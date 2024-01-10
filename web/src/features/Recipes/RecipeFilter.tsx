@@ -53,6 +53,7 @@ const RecipeFilter = ({tagParam, ingredientParam, onFilter}: Props) => {
                       ? setActiveTags(activeTags.filter((t) => t !== tag.id))
                       : setActiveTags([...activeTags, tag.id]);
                   }}
+                  textTransform="capitalize"
                 >
                   {tag.name}
                 </Tag>
@@ -83,6 +84,7 @@ const RecipeFilter = ({tagParam, ingredientParam, onFilter}: Props) => {
                       ? setActiveIng(activeIng.filter((i) => i !== ing.id))
                       : setActiveIng([...activeIng, ing.id]);
                   }}
+                  textTransform="capitalize"
                 >
                   {ing.name}
                 </Tag>

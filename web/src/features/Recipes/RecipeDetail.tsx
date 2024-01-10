@@ -188,6 +188,7 @@ const RecipeDetail = () => {
                         colorScheme="orange"
                         w="auto"
                         mr="5px"
+                        textTransform="capitalize"
                       >
                         {tag.name}
                       </Tag>

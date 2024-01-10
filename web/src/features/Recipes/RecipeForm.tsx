@@ -264,7 +264,7 @@ const RecipeForm = ({ recipe: recipe_, onSave, error }: Props) => {
                 {ingList.map((ing) => (
                   <ListItem key={ing.ingredient.value}>
                     <HStack>
-                      <Text>
+                      <Text textTransform="capitalize">
                         {ing.amount} {ing.unit.label} {ing.ingredient.label}
                       </Text>
                       <Tooltip label="Delete ingredient" fontSize="sm">

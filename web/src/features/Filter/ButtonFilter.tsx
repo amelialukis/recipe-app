@@ -18,7 +18,13 @@ const ButtonFilter = ({paramKey, list }: Props) => {
       rowGap="10px"
     >
       {list.map((item) => (
-        <Button key={item.id} variant="outline" colorScheme="orange" onClick={() => navigate(`/recipe?${paramKey}=${item.id}`)}>
+        <Button
+            key={item.id}
+            variant="outline"
+            colorScheme="orange"
+            textTransform="capitalize"
+            onClick={() => navigate(`/recipe?${paramKey}=${item.id}`)}
+        >
           {item.name}
         </Button>
       ))}
