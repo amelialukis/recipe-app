@@ -43,7 +43,7 @@ const RecipeDetailTab = ({ desc, ingredients, procedures }: Props) => {
           <TabPanel>
             <UnorderedList>
               {ingredients && ingredients.map((ing) => (
-                <ListItem key={ing.id}>
+                <ListItem key={ing.id} textTransform="capitalize">
                   {ing.amount} {ing.unit.name} {ing.ingredient.name}
                 </ListItem>
               ))}

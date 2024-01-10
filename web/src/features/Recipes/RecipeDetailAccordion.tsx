@@ -54,7 +54,7 @@ const RecipeDetailAccordion = ({ desc, ingredients, procedures }: Props) => {
             <Box>
               <UnorderedList>
                 {ingredients && ingredients.map((ing) => (
-                  <ListItem key={ing.id}>
+                  <ListItem key={ing.id} textTransform="capitalize">
                     {ing.amount} {ing.unit.name} {ing.ingredient.name}
                   </ListItem>
                 ))}
