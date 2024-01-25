@@ -18,6 +18,7 @@ import {
   AlertIcon,
   AlertDescription,
   useDisclosure,
+  useToast
 } from "@chakra-ui/react";
 import { LockIcon, EditIcon, UnlockIcon } from "@chakra-ui/icons";
 import { useNavigate, useParams } from "react-router-dom";
@@ -30,15 +31,19 @@ import {RecipeType} from "./types";
 import RecipeImagePopover from "./RecipeImagePopover.tsx";
 import useEditRecipeDetail from "./hooks/useEditRecipeDetail.ts";
 import RecipeLockUnlockAlert from "./RecipeLockUnlockAlert.tsx";
+import useLikeRecipe from "./hooks/useLikeRecipe.ts";
+import LikeIcon from "../../theme/Icons/LikeIcon.tsx";
 
 const RecipeDetail = () => {
   const { recipeId } = useParams();
   const { data, isError, isLoading } = useGetRecipeDetail(recipeId);
   const { mutate, isSuccess } = useEditRecipeDetail(recipeId);
+  const { mutate: like, isSuccess: likeSuccess, isError: likeError } = useLikeRecipe();
   const recipe = data?.data ? data.data: {} as RecipeType;
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+  const toast = useToast()
 
   const onToggle = () => {
     mutate({private: !recipe.private})
@@ -46,10 +51,19 @@ const RecipeDetail = () => {
   }
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || likeSuccess) {
       navigate(0)
     }
-  }, [isSuccess]);
+    else if (likeError) {
+      toast({
+        title: "We're sorry.",
+        description: "There is something wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+  }, [isSuccess, likeSuccess, likeError]);
 
   return (
     <Stack>
@@ -97,37 +111,49 @@ const RecipeDetail = () => {
                     <Text fontSize="xl" fontWeight="600">
                       {recipe?.title}
                     </Text>
-                    {!recipe?.user &&
-                      <HStack>
-                        <Tooltip label="Lock/Unlock Recipe">
-                          <IconButton
-                              aria-label="lock unlock"
-                              icon={recipe.private ? <LockIcon /> : <UnlockIcon />}
-                              variant={recipe.private ? "solid": "outline"}
-                              colorScheme="orange"
-                              color="orange.200"
-                              onClick={onOpen}
-                          />
-                        </Tooltip>
-                        <RecipeLockUnlockAlert
-                            isPrivate={recipe.private}
-                            isOpen={isOpen}
-                            onClose={onClose}
-                            cancelRef={cancelRef}
-                            onToggle={onToggle}
-                        />
-                        <Tooltip label="Edit recipe.">
-                          <IconButton
-                            aria-label="edit recipe"
-                            icon={<EditIcon />}
-                            variant="outline"
+                    <HStack>
+                      <Tooltip label="Like recipe.">
+                        <IconButton
+                            aria-label="like recipe"
+                            icon={<LikeIcon />}
+                            variant={recipe.liked ? "solid": "outline"}
                             colorScheme="orange"
                             color="orange.200"
-                            onClick={() => navigate(`/recipe/${recipe.id}/edit`)}
+                            onClick={() => {if (recipeId) like(recipeId)}}
+                        />
+                      </Tooltip>
+                      {!recipe?.user &&
+                        <HStack>
+                          <Tooltip label="Lock/Unlock Recipe">
+                            <IconButton
+                                aria-label="lock unlock"
+                                icon={recipe.private ? <LockIcon /> : <UnlockIcon />}
+                                variant={recipe.private ? "solid": "outline"}
+                                colorScheme="orange"
+                                color="orange.200"
+                                onClick={onOpen}
+                            />
+                          </Tooltip>
+                          <RecipeLockUnlockAlert
+                              isPrivate={recipe.private}
+                              isOpen={isOpen}
+                              onClose={onClose}
+                              cancelRef={cancelRef}
+                              onToggle={onToggle}
                           />
-                        </Tooltip>
-                      </HStack>
-                    }
+                          <Tooltip label="Edit recipe.">
+                            <IconButton
+                              aria-label="edit recipe"
+                              icon={<EditIcon />}
+                              variant="outline"
+                              colorScheme="orange"
+                              color="orange.200"
+                              onClick={() => navigate(`/recipe/${recipe.id}/edit`)}
+                            />
+                          </Tooltip>
+                        </HStack>
+                      }
+                    </HStack>
                   </HStack>
                 </CardHeader>
 
@@ -158,6 +184,7 @@ const RecipeDetail = () => {
                           <Text>{recipe.user}</Text>
                         </HStack>
                     }
+                    <Text textAlign="end">{recipe.likes} like(s)</Text>
                   </Stack>
                 </CardBody>
               </Card>

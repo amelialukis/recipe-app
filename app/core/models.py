@@ -121,3 +121,20 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return f"{self.amount} {self.unit} {self.ingredient}"
+
+
+class RecipeLike(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    recipe = models.ForeignKey("Recipe", on_delete=models.CASCADE)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user.name} likes {self.recipe}."
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["recipe", "user"], name="unique_recipe_user_like"),
+        ]

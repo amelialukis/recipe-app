@@ -124,3 +124,20 @@ class ModelTests(TestCase):
         file_path = models.recipe_image_file_path(None, "example.jpg")
 
         self.assertEqual(file_path, f"uploads/recipe/{uuid}.jpg")
+
+    def test_create_recipe_like(self):
+        user = get_user_model().objects.create_user(
+            "test@example.com",
+            "test1234",
+        )
+
+        recipe = models.Recipe.objects.create(
+            user=user,
+            title="Sample recipe name",
+            time_minutes=5,
+            price=Decimal("5.50"),
+            description="Sample recipe description",
+        )
+
+        like = models.RecipeLike.objects.create(recipe=recipe, user=user)
+        self.assertEqual(str(like), f"{user.name} likes {recipe.title}.")

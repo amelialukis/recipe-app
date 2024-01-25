@@ -3,7 +3,6 @@ Test for the tags APIs.
 """
 from decimal import Decimal
 
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import TestCase
 
@@ -13,6 +12,7 @@ from rest_framework.test import APIClient
 from core.models import Tag, Recipe
 
 from recipe.serializers import TagSerializer
+from recipe.tests.utils import create_user
 
 TAGS_URL = reverse("recipe:tag-list")
 
@@ -20,11 +20,6 @@ TAGS_URL = reverse("recipe:tag-list")
 def detail_url(tag_id):
     """Create and return a tag detail url."""
     return reverse("recipe:tag-detail", args=[tag_id])
-
-
-def create_user(email="user@example.com", password="test1234"):
-    """Create and return a user."""
-    return get_user_model().objects.create_user(email, password)
 
 
 class PublicTagsApiTests(TestCase):
@@ -44,7 +39,10 @@ class PrivateTagsApiTests(TestCase):
     """Test authenticated API requests."""
 
     def setUp(self):
-        self.user = create_user()
+        self.user = create_user(
+            email="test@example.com",
+            password="test1234"
+        )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 

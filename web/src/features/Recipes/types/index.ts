@@ -19,4 +19,6 @@ export interface RecipeType {
   procedures: string;
   private: boolean;
   user?: string;
+  likes: string;
+  liked: boolean;
 }

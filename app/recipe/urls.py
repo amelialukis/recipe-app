@@ -20,4 +20,5 @@ app_name = "recipe"
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("like", views.RecipeLikeView.as_view(), name="like")
 ]

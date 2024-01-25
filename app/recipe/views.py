@@ -10,11 +10,12 @@ from drf_spectacular.utils import (
 )
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Recipe, Tag, Ingredient, Unit
+from core.models import Recipe, Tag, Ingredient, Unit, RecipeLike
 from recipe import serializers, permissions
 
 
@@ -169,3 +170,10 @@ class UnitViewSet(mixins.ListModelMixin,
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Unit.objects.all()
+
+class RecipeLikeView(CreateAPIView):
+    """View for manage recipe likes."""
+    serializer_class = serializers.RecipeLikeSerializer
+    queryset = RecipeLike.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]

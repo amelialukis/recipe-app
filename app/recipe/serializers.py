@@ -1,9 +1,10 @@
 """
 Serializers for recipe APIs.
 """
+from django.http import HttpResponse
 from rest_framework import serializers
 
-from core.models import Recipe, Tag, Ingredient, Unit, RecipeIngredient
+from core.models import Recipe, Tag, Ingredient, Unit, RecipeIngredient, RecipeLike
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -43,18 +44,43 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = ["id", "amount", "unit", "ingredient"]
         read_only_fields = ["id"]
 
+class RecipeLikeSerializer(serializers.Serializer):
+    """Serializer for recipe likes."""
+    recipe_id = serializers.IntegerField(min_value=1)
+
+    class Meta:
+        fields = ["recipe_id"]
+
+    def create(self, validated_data):
+        """Create a like object for recipe."""
+        recipe_id = validated_data.pop("recipe_id", 0)
+        request = self.context.get("request")
+        if request:
+            like_obj, created = RecipeLike.objects.get_or_create(
+                recipe_id=recipe_id,
+                user=request.user
+            )
+            if not created:
+                like_obj.active = not like_obj.active
+                like_obj.save()
+            return like_obj
+        return HttpResponse(status=400)
+
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for recipes."""
     tags = TagSerializer(many=True, required=False)
     ingredients = RecipeIngredientSerializer(many=True, required=False)
     user = serializers.SerializerMethodField()
+    likes = serializers.SerializerMethodField()
+    liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipe
         fields = [
             "id", "title", "time_minutes", "price", "link", "tags",
-            "ingredients", "user", "private", "image",
+            "ingredients", "user", "private", "image", "likes",
+            "liked",
         ]
         read_only_fields = ["id", "user"]
 
@@ -114,6 +140,14 @@ class RecipeSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         request = self.context.get("request")
         return obj.user.name if request and obj.user != request.user else ""
+
+    def get_likes(self, obj):
+        return obj.recipelike_set.filter(active=True).count()
+
+    def get_liked(self, obj):
+        if request:= self.context.get("request"):
+            return obj.recipelike_set.filter(active=True, user=request.user).exists()
+        return False
 
 
 class RecipeDetailSerializer(RecipeSerializer):

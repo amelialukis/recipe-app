@@ -66,6 +66,7 @@ const RecipeCard = ({ recipe }: Props) => {
               </Tag>
             ))}
           </Box>
+          <Text fontSize="md" color="orange.300" textAlign="end">{recipe.likes} like(s)</Text>
         </Stack>
       </Card>
     </Box>

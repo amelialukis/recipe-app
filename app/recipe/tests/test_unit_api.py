@@ -2,7 +2,6 @@
 Tests for the units APIs.
 """
 
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import TestCase
 
@@ -12,6 +11,7 @@ from rest_framework.test import APIClient
 from core.models import Unit
 
 from recipe.serializers import UnitSerializer
+from recipe.tests.utils import create_user
 
 
 UNITS_URL = reverse("recipe:unit-list")
@@ -20,11 +20,6 @@ UNITS_URL = reverse("recipe:unit-list")
 def detail_url(unit_id):
     """Create and return a unit detail URL."""
     return reverse("recipe:unit-detail", args=[unit_id])
-
-
-def create_user(email="user@example.com", password="pass1234"):
-    """Create and return user."""
-    return get_user_model().objects.create_user(email=email, password=password)
 
 
 class PublicUnitsApiTests(TestCase):
@@ -44,7 +39,10 @@ class PrivateUnitsApiTests(TestCase):
     """Test authenticated API requests."""
 
     def setUp(self):
-        self.user = create_user()
+        self.user = create_user(
+            email="test@example.com",
+            password="test1234"
+        )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
 

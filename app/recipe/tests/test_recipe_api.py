@@ -15,10 +15,11 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core.models import Recipe, Tag, Ingredient, Unit, RecipeIngredient
-from ..serializers import (
+from recipe.serializers import (
     RecipeSerializer,
     RecipeDetailSerializer,
 )
+from recipe.tests.utils import create_recipe, create_user
 
 RECIPES_URL = reverse("recipe:recipe-list")
 
@@ -31,27 +32,6 @@ def detail_url(recipe_id):
 def image_upload_url(recipe_id):
     """Create and return an image upload URL."""
     return reverse("recipe:recipe-upload-image", args=[recipe_id])
-
-
-def create_recipe(user, **params):
-    """Create and return a sample recipe."""
-    defaults = {
-        "title": "Sample recipe title",
-        "time_minutes": 30,
-        "price": Decimal("2.99"),
-        "description": "Sample description.",
-        "link": "http://example.com/recipes",
-        "procedures": "1. Bla bla bla...",
-    }
-    defaults.update(params)
-
-    recipe = Recipe.objects.create(user=user, **defaults)
-    return recipe
-
-
-def create_user(**params):
-    """Create and return a new user."""
-    return get_user_model().objects.create_user(**params)
 
 
 class PublicRecipeAPITests(TestCase):
