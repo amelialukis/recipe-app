@@ -40,7 +40,7 @@ const Profile = () => {
             </Text>
           </CardHeader>
 
-          <CardBody>
+          <CardBody display="grid">
             <Stack
               divider={<StackDivider borderColor="orange.100" />}
               spacing="4"
@@ -54,6 +54,15 @@ const Profile = () => {
                 <Text>{data?.data.email}</Text>
               </HStack>
             </Stack>
+            <Button
+                mt={8}
+                justifySelf="end"
+                variant="link"
+                colorScheme="orange"
+                onClick={() => navigate("/recipe?liked_recipes=true")}
+            >
+              Liked Recipes
+            </Button>
           </CardBody>
           <CardFooter justifyContent="end">
             <Button

@@ -55,6 +55,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ingredients = self.request.query_params.get("ingredients")
         my_recipe = self.request.query_params.get("my_recipe")
         sort_by = self.request.query_params.get("sort_by", "latest")
+        liked_recipes = self.request.query_params.get("liked_recipes", False)
         queryset = self.queryset
         if title:
             queryset = queryset.filter(title__icontains=title)
@@ -73,6 +74,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             queryset = queryset.order_by("id")
         elif sort_by == "popularity":
             queryset = queryset.annotate(likes=Count("recipelike")).order_by("-likes")
+
+        if liked_recipes:
+            queryset = queryset.filter(recipelike__user=self.request.user)
 
         if my_recipe:
             return queryset.filter(
