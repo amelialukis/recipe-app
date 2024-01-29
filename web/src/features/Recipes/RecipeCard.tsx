@@ -30,12 +30,12 @@ const RecipeCard = ({ recipe }: Props) => {
         <Stack>
           <Box
             borderColor="orange.100"
-            h={{ md: "320px", xl: "210px" }}
+            boxSize={{ md: "320px", xl: "210px" }}
             justifyContent="center"
             display="flex"
             borderWidth="1px"
           >
-            <Image src={recipe.image || tableware} objectFit="cover" />
+            <Image src={recipe.image || tableware} objectFit="cover" w="100%"/>
           </Box>
           <HStack justifyContent="space-between">
             <Text fontWeight="600">{recipe.title}</Text>

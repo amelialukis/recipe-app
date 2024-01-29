@@ -96,6 +96,7 @@ const RecipeDetail = () => {
               overflow="hidden"
               display="flex"
               justifyContent="center"
+              alignItems="center"
             >
               <RecipeImagePopover image={recipe?.image} user={recipe?.user}/>
             </GridItem>
