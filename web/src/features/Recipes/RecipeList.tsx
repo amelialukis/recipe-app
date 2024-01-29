@@ -35,8 +35,9 @@ const RecipeList = () => {
     refetch()
   }
 
-  const onSearch = (search: string) => {
+  const onSearch = (search: string = "", sort: string = "") => {
     searchParams.set("title", search)
+    searchParams.set("sort_by", sort)
     setSearchParams(searchParams)
     refetch()
   }
@@ -104,6 +105,7 @@ const RecipeList = () => {
                           searchParams.delete("tags")
                           searchParams.delete("ingredients")
                           searchParams.delete("title")
+                          searchParams.delete("sort_by")
                           setSearchParams(searchParams)
                           navigate(0)
                         }}

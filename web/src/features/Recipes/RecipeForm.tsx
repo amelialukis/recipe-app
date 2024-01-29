@@ -22,7 +22,6 @@ import {
   FormErrorMessage, NumberInputField, NumberInput,
 } from "@chakra-ui/react";
 import CreatableSelect from "react-select/creatable";
-import { Theme } from "react-select";
 import Select from "react-select";
 import { AddIcon } from "@chakra-ui/icons";
 import { RecipeType } from "./types";
@@ -30,24 +29,10 @@ import useGetTags from "../Filter/hooks/useGetTags.ts";
 import useGetIngredients from "../Filter/hooks/useGetIngredients.ts";
 import useGetUnits from "./hooks/useGetUnits.ts";
 import getOptions from "./utils/getOptions.ts";
+import { orangeTheme } from "../../theme/react-select.ts";
 import { AxiosError } from "axios";
 import {camelizeKeys} from "humps";
 
-const orangeTheme = (theme: Theme) => ({
-  ...theme,
-  colors: {
-    ...theme.colors,
-    neutral10: "#FEEBC8",
-    neutral5: "#FEEBC8",
-    neutral20: "#FEEBC8",
-    neutral30: "#FBD38D",
-    neutral40: "#F6AD55",
-    neutral60: "#ED8936",
-    neutral80: "#DD6B20",
-    primary: "#F6AD55",
-    primary25: "#FEEBC8",
-  },
-});
 
 interface Props {
   recipe?: RecipeType;

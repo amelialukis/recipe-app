@@ -1,7 +1,7 @@
 """
 Views for recipe APIs.
 """
-from django.db.models import Q
+from django.db.models import Q, Count
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -54,6 +54,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         tags = self.request.query_params.get("tags")
         ingredients = self.request.query_params.get("ingredients")
         my_recipe = self.request.query_params.get("my_recipe")
+        sort_by = self.request.query_params.get("sort_by", "latest")
         queryset = self.queryset
         if title:
             queryset = queryset.filter(title__icontains=title)
@@ -65,16 +66,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 ingredients__ingredient__id__in=ingredient_ids
             )
+
+        if sort_by == "latest":
+            queryset = queryset.order_by("-id")
+        elif sort_by == "oldest":
+            queryset = queryset.order_by("id")
+        elif sort_by == "popularity":
+            queryset = queryset.annotate(likes=Count("recipelike")).order_by("-likes")
+
         if my_recipe:
             return queryset.filter(
                 user=self.request.user
-            ).order_by("-id") \
-                .distinct()
+            ).distinct()
 
         return queryset.filter(
             Q(user=self.request.user) | Q(private=False)
-        ).order_by("-id")\
-            .distinct()
+        ).distinct()
 
     def get_serializer_class(self):
         """Return the serializer class for request."""
