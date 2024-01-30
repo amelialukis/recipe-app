@@ -2,6 +2,10 @@
 Serializers for recipe APIs.
 """
 from django.http import HttpResponse
+from drf_spectacular.utils import (
+    extend_schema_field,
+    OpenApiTypes,
+)
 from rest_framework import serializers
 
 from core.models import Recipe, Tag, Ingredient, Unit, RecipeIngredient, RecipeLike
@@ -137,13 +141,16 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    @extend_schema_field(OpenApiTypes.STR)
     def get_user(self, obj):
         request = self.context.get("request")
         return obj.user.name if request and obj.user != request.user else ""
 
+    @extend_schema_field(OpenApiTypes.INT)
     def get_likes(self, obj):
         return obj.recipelike_set.filter(active=True).count()
 
+    @extend_schema_field(OpenApiTypes.BOOL)
     def get_liked(self, obj):
         if request:= self.context.get("request"):
             return obj.recipelike_set.filter(active=True, user=request.user).exists()

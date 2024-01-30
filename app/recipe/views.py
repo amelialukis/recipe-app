@@ -33,7 +33,30 @@ from recipe import serializers, permissions
                 description="Comma seperated list of ingredients IDs to "
                             + "filter",
             ),
-
+            OpenApiParameter(
+                "title",
+                OpenApiTypes.STR,
+                description="Search recipe by name",
+            ),
+            OpenApiParameter(
+                "my_recipe",
+                OpenApiTypes.BOOL,
+                description="Filter user's own recipes",
+                default=False,
+            ),
+            OpenApiParameter(
+                "liked_recipe",
+                OpenApiTypes.BOOL,
+                description="Filter user's liked recipes",
+                default=False,
+            ),
+            OpenApiParameter(
+                "sort_by",
+                OpenApiTypes.STR,
+                description="Sort recipes",
+                enum=["latest", "oldest", "popularity"],
+                default="latest",
+            ),
         ]
     )
 )
@@ -53,7 +76,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         title = self.request.query_params.get("title")
         tags = self.request.query_params.get("tags")
         ingredients = self.request.query_params.get("ingredients")
-        my_recipe = self.request.query_params.get("my_recipe")
+        my_recipe = self.request.query_params.get("my_recipe", False)
         sort_by = self.request.query_params.get("sort_by", "latest")
         liked_recipes = self.request.query_params.get("liked_recipes", False)
         queryset = self.queryset
