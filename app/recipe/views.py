@@ -23,7 +23,7 @@ from core.models import Recipe, Tag, Ingredient, Unit, RecipeLike
 from recipe import serializers, permissions
 
 
-@method_decorator(cache_page(60 * 60), "dispatch")
+
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -152,7 +152,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @method_decorator(cache_page(60 * 60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
+
+@method_decorator(cache_page(24 * 60 * 60), "dispatch")
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -206,6 +211,7 @@ class IngredientViewSet(BaseRecipeAttrViewSet):
         return queryset.order_by("-name").distinct()
 
 
+@method_decorator(cache_page(24 * 60 * 60), "dispatch")
 class UnitViewSet(mixins.ListModelMixin,
                   mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin,
