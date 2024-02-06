@@ -3,6 +3,8 @@ Views for recipe APIs.
 """
 import random
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.db.models import Q, Count
 from drf_spectacular.utils import (
     extend_schema,
@@ -21,6 +23,7 @@ from core.models import Recipe, Tag, Ingredient, Unit, RecipeLike
 from recipe import serializers, permissions
 
 
+@method_decorator(cache_page(60 * 60), "dispatch")
 @extend_schema_view(
     list=extend_schema(
         parameters=[
