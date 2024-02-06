@@ -1,6 +1,8 @@
 """
 Views for recipe APIs.
 """
+import random
+
 from django.db.models import Q, Count
 from drf_spectacular.utils import (
     extend_schema,
@@ -79,7 +81,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         my_recipe = self.request.query_params.get("my_recipe", False)
         sort_by = self.request.query_params.get("sort_by", "latest")
         liked_recipes = self.request.query_params.get("liked_recipes", False)
+        home_recipes = self.request.query_params.get("home_recipes", False)
         queryset = self.queryset
+
+        if home_recipes:
+            ids = list(queryset.filter(Q(user=self.request.user) | Q(private=False)).distinct().values_list("id", flat=True))
+            recipe_ids = random.sample(ids, min(10, len(ids)))
+            return queryset.filter(id__in=recipe_ids).annotate(likes=Count("recipelike")).order_by("-likes")
+
         if title:
             queryset = queryset.filter(title__icontains=title)
         if tags:
