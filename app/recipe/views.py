@@ -23,7 +23,6 @@ from core.models import Recipe, Tag, Ingredient, Unit, RecipeLike
 from recipe import serializers, permissions
 
 
-
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -88,9 +87,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
 
         if home_recipes:
-            ids = list(queryset.filter(Q(user=self.request.user) | Q(private=False)).distinct().values_list("id", flat=True))
+            ids = list(
+                queryset
+                .filter(Q(user=self.request.user) | Q(private=False))
+                .distinct()
+                .values_list("id", flat=True)
+            )
             recipe_ids = random.sample(ids, min(10, len(ids)))
-            return queryset.filter(id__in=recipe_ids).annotate(likes=Count("recipelike")).order_by("-likes")
+            return (queryset
+                    .filter(id__in=recipe_ids)
+                    .annotate(likes=Count("recipelike"))
+                    .order_by("-likes"))
 
         if title:
             queryset = queryset.filter(title__icontains=title)
@@ -108,7 +115,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         elif sort_by == "oldest":
             queryset = queryset.order_by("id")
         elif sort_by == "popularity":
-            queryset = queryset.annotate(likes=Count("recipelike")).order_by("-likes")
+            queryset = (queryset
+                        .annotate(likes=Count("recipelike"))
+                        .order_by("-likes"))
 
         if liked_recipes:
             queryset = queryset.filter(recipelike__user=self.request.user)
@@ -222,6 +231,7 @@ class UnitViewSet(mixins.ListModelMixin,
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Unit.objects.all()
+
 
 class RecipeLikeView(CreateAPIView):
     """View for manage recipe likes."""

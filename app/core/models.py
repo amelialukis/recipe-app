@@ -136,5 +136,8 @@ class RecipeLike(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["recipe", "user"], name="unique_recipe_user_like"),
+            models.UniqueConstraint(
+                fields=["recipe", "user"],
+                name="unique_recipe_user_like",
+            ),
         ]

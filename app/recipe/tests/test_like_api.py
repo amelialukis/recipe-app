@@ -8,13 +8,14 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Recipe, RecipeLike
+from core.models import RecipeLike
 
-from recipe.serializers import RecipeLikeSerializer, RecipeDetailSerializer
+from recipe.serializers import RecipeDetailSerializer
 from recipe.tests.utils import create_recipe, create_user
 
 
 LIKES_URL = reverse("recipe:like")
+
 
 def recipe_detail_url(recipe_id):
     """Create and return a recipe detail URL."""
@@ -32,6 +33,7 @@ class PublicUnitsApiTests(TestCase):
         res = self.client.post(LIKES_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
 class PrivateIngredientsApiTests(TestCase):
     """Test authenticated API requests."""

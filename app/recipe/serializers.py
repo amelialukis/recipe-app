@@ -8,7 +8,14 @@ from drf_spectacular.utils import (
 )
 from rest_framework import serializers
 
-from core.models import Recipe, Tag, Ingredient, Unit, RecipeIngredient, RecipeLike
+from core.models import (
+    Recipe,
+    Tag,
+    Ingredient,
+    Unit,
+    RecipeIngredient,
+    RecipeLike
+)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -47,6 +54,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         model = RecipeIngredient
         fields = ["id", "amount", "unit", "ingredient"]
         read_only_fields = ["id"]
+
 
 class RecipeLikeSerializer(serializers.Serializer):
     """Serializer for recipe likes."""
@@ -152,8 +160,11 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(OpenApiTypes.BOOL)
     def get_liked(self, obj):
-        if request:= self.context.get("request"):
-            return obj.recipelike_set.filter(active=True, user=request.user).exists()
+        if request := self.context.get("request"):
+            return (obj
+                    .recipelike_set
+                    .filter(active=True, user=request.user)
+                    .exists())
         return False
 
 
