@@ -2,6 +2,7 @@ from functools import wraps
 
 from django.views.decorators.cache import cache_page
 
+
 def cache_on_auth(timeout):
     def decorator(view_func):
         @wraps(view_func)
