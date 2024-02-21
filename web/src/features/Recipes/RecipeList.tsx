@@ -21,12 +21,13 @@ import useGetRecipes from "./hooks/useGetRecipes.ts";
 import LoadSpinner from "../LoadSpinner.tsx";
 import getParams from "./utils/getParams.ts";
 import RecipeSearch from "./RecipeSearch.tsx";
+import RecipePagination from "./RecipePagination.tsx";
 
 const RecipeList = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const {tags, ingredients} = getParams(searchParams)
 
-  const { data, isError, isLoading, refetch } = useGetRecipes(searchParams);
+  const { data, isError, isLoading, refetch } = useGetRecipes(false, searchParams);
 
   const onFilter = (tags: number[] | [], ingredients: number[] | []) =>{
     searchParams.set("tags", tags.length > 0 ? tags.join(",") : "")
@@ -38,6 +39,12 @@ const RecipeList = () => {
   const onSearch = (search: string = "", sort: string = "") => {
     searchParams.set("title", search)
     searchParams.set("sort_by", sort)
+    setSearchParams(searchParams)
+    refetch()
+  }
+
+  const onPaginate = (page: number = 1) => {
+    searchParams.set("page", page.toString())
     setSearchParams(searchParams)
     refetch()
   }
@@ -106,6 +113,7 @@ const RecipeList = () => {
                           searchParams.delete("ingredients")
                           searchParams.delete("title")
                           searchParams.delete("sort_by")
+                          searchParams.delete("page")
                           setSearchParams(searchParams)
                           navigate(0)
                         }}
@@ -151,14 +159,19 @@ const RecipeList = () => {
                 columnGap="15px"
                 rowGap="15px"
               >
-                {data?.data && data.data.length > 0 ? (
-                  data.data.map((recipe) => (
+                {data?.data?.results && data.data.results.length > 0 ? (
+                  data.data.results.map((recipe) => (
                     <RecipeCard key={recipe.id} recipe={recipe} />
                   ))
                 ) : (
                   <Text pl="10px">No recipe found.</Text>
                 )}
               </SimpleGrid>
+              <RecipePagination
+                  next={data?.data && data.data.next}
+                  previous={data?.data && data.data.previous}
+                  onPaginate={onPaginate}
+              />
             </GridItem>
             <GridItem colSpan={1} hideBelow="lg">
               <RecipeFilter

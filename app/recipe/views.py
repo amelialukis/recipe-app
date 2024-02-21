@@ -21,6 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from core.models import Recipe, Tag, Ingredient, Unit, RecipeLike
 from recipe import serializers, permissions
 from recipe.decorators import cache_on_auth
+from recipe.paginations import RecipePagination
 
 
 @extend_schema_view(
@@ -163,6 +164,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @method_decorator(cache_on_auth(60 * 60))
     def list(self, request, *args, **kwargs):
+        if not request.query_params.get("home_recipes", False):
+            self.pagination_class = RecipePagination
+
         return super().list(request, *args, **kwargs)
 
 

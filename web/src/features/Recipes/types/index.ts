@@ -22,3 +22,9 @@ export interface RecipeType {
   likes: string;
   liked: boolean;
 }
+
+export interface RecipePage{
+  next: number;
+  previous: number;
+  results: RecipeType[];
+}

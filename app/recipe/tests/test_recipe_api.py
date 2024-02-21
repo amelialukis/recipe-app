@@ -73,7 +73,7 @@ class PrivateRecipeApiTests(TestCase):
         recipes = Recipe.objects.all().order_by("-id")
         serializer = RecipeSerializer(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data["results"], serializer.data)
 
     def test_private_recipe_list_limited_to_user(self):
         """Test list of private recipes is limited to authenticated user."""
@@ -85,8 +85,8 @@ class PrivateRecipeApiTests(TestCase):
         other_recipe_ser = RecipeSerializer(other_recipe).data
         my_recipe_ser = RecipeSerializer(my_recipe).data
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertNotIn(other_recipe_ser, res.data)
-        self.assertIn(my_recipe_ser, res.data)
+        self.assertNotIn(other_recipe_ser, res.data["results"])
+        self.assertIn(my_recipe_ser, res.data["results"])
 
     def test_other_user_non_private_recipe(self):
         """Test list other user non-private recipes."""
@@ -98,8 +98,8 @@ class PrivateRecipeApiTests(TestCase):
         other_recipe_ser = RecipeSerializer(other_recipe).data
         my_recipe_ser = RecipeSerializer(my_recipe).data
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertIn(other_recipe_ser, res.data)
-        self.assertIn(my_recipe_ser, res.data)
+        self.assertIn(other_recipe_ser, res.data["results"])
+        self.assertIn(my_recipe_ser, res.data["results"])
 
     def test_get_recipe_detail(self):
         """Test get recipe detail."""
@@ -498,9 +498,9 @@ class PrivateRecipeApiTests(TestCase):
         s2 = RecipeSerializer(r2)
         s3 = RecipeSerializer(r3)
 
-        self.assertIn(s1.data, res.data)
-        self.assertIn(s2.data, res.data)
-        self.assertNotIn(s3.data, res.data)
+        self.assertIn(s1.data, res.data["results"])
+        self.assertIn(s2.data, res.data["results"])
+        self.assertNotIn(s3.data, res.data["results"])
 
     def test_filter_by_ingredients(self):
         """Test filtering recipes by ingredients."""
@@ -530,9 +530,9 @@ class PrivateRecipeApiTests(TestCase):
         s2 = RecipeSerializer(r2)
         s3 = RecipeSerializer(r3)
 
-        self.assertIn(s1.data, res.data)
-        self.assertIn(s2.data, res.data)
-        self.assertNotIn(s3.data, res.data)
+        self.assertIn(s1.data, res.data["results"])
+        self.assertIn(s2.data, res.data["results"])
+        self.assertNotIn(s3.data, res.data["results"])
 
     def test_search_recipe_by_name(self):
         recipe_name = "Fresh Salad"
@@ -544,9 +544,9 @@ class PrivateRecipeApiTests(TestCase):
         res1 = self.client.get(RECIPES_URL)
         res2 = self.client.get(RECIPES_URL, payload)
 
-        self.assertEqual(4, len(res1.data))
-        self.assertEqual(2, len(res2.data))
-        for i in res2.data:
+        self.assertEqual(4, len(res1.data["results"]))
+        self.assertEqual(2, len(res2.data["results"]))
+        for i in res2.data["results"]:
             self.assertIn(payload["title"].lower(), i["title"].lower())
 
 

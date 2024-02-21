@@ -3,8 +3,7 @@ import SimpleRecipeCard from "./SimpleRecipeCard.tsx";
 import useGetRecipes from "../Recipes/hooks/useGetRecipes.ts";
 
 const RecipeSection = () => {
-    const searchParams = new URLSearchParams([["home_recipes", "true"]])
-    const { data, isError, isLoading} = useGetRecipes(searchParams);
+    const { data, isError, isLoading} = useGetRecipes(true);
 
     if (!(isLoading || isError || data?.data.length == 0)) {
         return (
